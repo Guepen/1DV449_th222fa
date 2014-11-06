@@ -7,7 +7,7 @@ var request = require('request');
 var cheerio = require('cheerio');
 var app = express();
 
-
+var json = {coursename: "", courseUrl: "", courseCode: "", courseText: "", coursePlanUrl: ""};
 
 
 /* GET users listing. */
@@ -25,15 +25,15 @@ app.get('/', function(req, res) {
         //using slice to get the last character containing the last pagenumber
         lastPage = lastPage.slice(-1);
 
-        scraper(lastPage);
+        scrapeCourseNameAndUrl(lastPage);
     });
 
 
 });
 
-var scraper = function(lastPage) {
+var scrapeCourseNameAndUrl = function(lastPage) {
     var coursename, courseUrl, courseCode, $;
-    var json = {coursename: "", courseUrl: "", courseCode: ""};
+
 
     //loop through every page with courses
     for (var i = 1; i <= lastPage; i++) {
@@ -47,7 +47,8 @@ var scraper = function(lastPage) {
                     var data = $(this);
                     json.coursename = data.html();
                     json.courseUrl = data.attr('href');
-                    console.log(json.coursename);
+                    scrapeCourseInformation(json.courseUrl);
+
                 });
 
 
@@ -55,6 +56,27 @@ var scraper = function(lastPage) {
 
         })
     }
+
+
+};
+
+var scrapeCourseInformation = function(url){
+    var $, courseCode, courseText;
+    request(url, function (error, response, body) {
+        $ = cheerio.load(body);
+
+        courseCode = $('#header-wrapper ul li:last-child').text();
+        if(courseCode.length == 6){
+            json.courseCode = courseCode;
+        } else{
+            json.courseCode = "No Information!";
+        }
+
+        courseText = $('.entry-content :first-child').next().text();
+        console.log(courseText);
+
+
+    })
 };
 
 module.exports = app;
