@@ -14,20 +14,12 @@ var jsonToClient;
 var readFromFile = function(){
     fs.readFile('data.json', function(err, data) {
         var json = JSON.parse(data);
-        console.log();
-        if (Date.now() - Json.latestScrape > ) {
+
+
+        //make new scrape if 1 minute has passed since the last scrape
+        if (Date.now() - Json.latestScrape > 60000){
             startScrape();
-            console.log("HHHHH");
-
-
-
         }
-
-
-
-
-        jsonToClient = json;
-
 
     });
 
@@ -52,8 +44,8 @@ var startScrape = function(){
         lastPage = lastPage.slice(-1);
 
         scrapeCourseNameAndUrl(lastPage, function(){
-
-          writeToFile(Json);
+            console.log('callback');
+            writeToFile(Json);
             jsonToClient = JSON.stringify(Json);
         });
 
@@ -76,34 +68,16 @@ app.get('/', function(req, res) {
 });
 
 var scrapeCourseNameAndUrl = function(lastPage, callback) {
-    var coursename, courseUrl, courseCode, $;
-    var pageCounter = 0;
-
-    var status;
+    var $;
     var date = new Date();
 
-    var year = date.getFullYear();
-    var timeStamp = date.getTime();
-    var month = date.getMonth() +1;
-    var day = date.getDate();
-    var hour = date.getHours();
-    var minute = date.getMinutes();
-    var second = date.getSeconds();
-    var millisecond = date.getMilliseconds();
-    Json.latestScrape = date.toISOString();
-
-    Json.latestScrape = timeStamp ;
-
-
-
+    Json.latestScrape = date.getTime();
 
     //loop through every page with courses
     for (var i = 1; i <= lastPage; i++) {
 
         var url = "http://coursepress.lnu.se/kurser/?bpage=" + i;
         request(url, function (error, response, body) {
-            //var currentPage = i;
-            status = response.statusCode;
 
             if (!error) {
 
@@ -119,22 +93,15 @@ var scrapeCourseNameAndUrl = function(lastPage, callback) {
 
                     scrapeCourseInformation(course.courseUrl, course, Json, lastPage, callback);
 
-
                 });
-
             }
         });
-
     }
-
-
-
-
 
 };
 
 var scrapeCourseInformation = function(url, courseObj, jsonObj, lastPage, callback){
-    var $, courseCode, courseText, coursePlanUrl, status;
+    var $, courseCode;
 
     request(url, function (error, response, body) {
         $ = cheerio.load(body);
@@ -146,7 +113,9 @@ var scrapeCourseInformation = function(url, courseObj, jsonObj, lastPage, callba
             courseObj.courseCode = "No Information!";
         }
 
+        //TODO improve this match
         courseObj.courseText = $('.entry-content p').text();
+
         $('section .menu-item a').filter(function(){
             var data = $(this);
             if(data.text().match("Kursplan")){
@@ -154,13 +123,11 @@ var scrapeCourseInformation = function(url, courseObj, jsonObj, lastPage, callba
             }
         });
 
-        var latestPost = {Title: "", Author: "", Time: ""}
-        var latestPostHtml = $('#latest-post').parent().next().html();
         courseObj.Post.Author = $('.entry-header .entry-byline strong').first().text();
         courseObj.Post.Title = $('.entry-header .entry-title').first().text();
 
         var postDate = $('.entry-header .entry-byline').text();
-         var date = postDate.match(/\d{4}-\d{2}-\d{2}/);
+        var date = postDate.match(/\d{4}-\d{2}-\d{2}/);
         var time = postDate.match(/\d{2}:\d{2}/);
 
 
@@ -172,12 +139,7 @@ var scrapeCourseInformation = function(url, courseObj, jsonObj, lastPage, callba
         jsonObj.numberOfCourses = jsonObj.courses.length;
         jsonObj.courses.push(courseObj);
 
-
-
-
         callback();
-
-
     });
 
 
