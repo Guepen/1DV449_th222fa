@@ -16,7 +16,6 @@ app.get('/', function(req, res) {
 
     request(url, function (error, resp, body) {
         var lastPage;
-
         var $ = cheerio.load(body);
 
         //not a secure solution. The webowner can change the structure of the DOM-elements
@@ -34,7 +33,21 @@ app.get('/', function(req, res) {
 
 var scrapeCourseNameAndUrl = function(lastPage) {
     var coursename, courseUrl, courseCode, $;
-    var Json = {courses: []};
+    var pageCounter = 0;
+    var Json = {courses: [], latestScrape: "", numberOfCourses: ""};
+    var status;
+    var date = new Date();
+
+    var year = date.getFullYear();
+    var month = date.getMonth() +1;
+    var day = date.getDate();
+    var hour = date.getHours();
+    var minute = date.getMinutes();
+    var second = date.getSeconds();
+    var millisecond = date.getMilliseconds();
+
+    Json.latestScrape = year + "-" + month + "-" + day + " " + hour + ":" + minute + ":" + second + ":" + millisecond;
+
 
 
 
@@ -43,21 +56,25 @@ var scrapeCourseNameAndUrl = function(lastPage) {
 
         var url = "http://coursepress.lnu.se/kurser/?bpage=" + i;
         request(url, function (error, response, body) {
+            //var currentPage = i;
+            status = response.statusCode;
+
             if (!error) {
+
                 $ = cheerio.load(body);
 
                 $('.item-title a').filter(function () {
-                    var course = {coursename: "", courseUrl: "", courseCode: "", courseText: "", coursePlanUrl: ""};
+
+                    var course = {coursename: "", courseUrl: "", courseCode: "", courseText: "", coursePlanUrl: "",
+                        Post: {Author: "", Time: "", Title: ""}};
                     var data = $(this);
                     course.coursename = data.text();
                     course.courseUrl = data.attr('href');
 
-                    scrapeCourseInformation(course.courseUrl, course, Json);
+                    scrapeCourseInformation(course.courseUrl, course, Json, lastPage);
 
 
                 });
-
-
 
             }
 
@@ -73,8 +90,9 @@ var scrapeCourseNameAndUrl = function(lastPage) {
 
 };
 
-var scrapeCourseInformation = function(url, courseObj, jsonObj){
-    var $, courseCode, courseText, coursePlanUrl;
+var scrapeCourseInformation = function(url, courseObj, jsonObj, lastPage){
+    var $, courseCode, courseText, coursePlanUrl, status;
+
     request(url, function (error, response, body) {
         $ = cheerio.load(body);
 
@@ -85,7 +103,7 @@ var scrapeCourseInformation = function(url, courseObj, jsonObj){
             courseObj.courseCode = "No Information!";
         }
 
-        courseObj.courseText = $('.entry-content p').text();
+        //courseObj.courseText = $('.entry-content p').text();
         $('section .menu-item a').filter(function(){
             var data = $(this);
             if(data.text().match("Kursplan")){
@@ -93,11 +111,34 @@ var scrapeCourseInformation = function(url, courseObj, jsonObj){
             }
         });
 
-        var latestPost = $('#latest-post').parent().next().text();
+        var latestPost = {Title: "", Author: "", Time: ""}
+        var latestPostHtml = $('#latest-post').parent().next().html();
+        courseObj.Post.Author = $('.entry-header .entry-byline strong').first().text();
+        courseObj.Post.Title = $('.entry-header .entry-title').first().text();
+
+        var postDate = $('.entry-header .entry-byline').text();
+         var date = postDate.match(/\d{4}-\d{2}-\d{2}/);
+        var time = postDate.match(/\d{2}:\d{2}/);
+
+
+        if (date !== null) {
+            courseObj.Post.Time = date[0] + " " + time[0];
+        } else{
+            courseObj.Post.Time = "No Information";
+        }
+        jsonObj.numberOfCourses = jsonObj.courses.length;
         jsonObj.courses.push(courseObj);
-        console.log(jsonObj);
+
+
+
+
 
     });
+
+
+};
+
+var writeToFile = function(status){
 
 
 };
