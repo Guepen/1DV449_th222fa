@@ -7,7 +7,7 @@ var request = require('request');
 var cheerio = require('cheerio');
 var app = express();
 
-var json = {coursename: "", courseUrl: "", courseCode: "", courseText: "", coursePlanUrl: ""};
+
 
 
 /* GET users listing. */
@@ -26,6 +26,7 @@ app.get('/', function(req, res) {
         lastPage = lastPage.slice(-1);
 
         scrapeCourseNameAndUrl(lastPage);
+
     });
 
 
@@ -33,6 +34,8 @@ app.get('/', function(req, res) {
 
 var scrapeCourseNameAndUrl = function(lastPage) {
     var coursename, courseUrl, courseCode, $;
+    var Json = {courses: []};
+
 
 
     //loop through every page with courses
@@ -44,39 +47,59 @@ var scrapeCourseNameAndUrl = function(lastPage) {
                 $ = cheerio.load(body);
 
                 $('.item-title a').filter(function () {
+                    var course = {coursename: "", courseUrl: "", courseCode: "", courseText: "", coursePlanUrl: ""};
                     var data = $(this);
-                    json.coursename = data.html();
-                    json.courseUrl = data.attr('href');
-                    scrapeCourseInformation(json.courseUrl);
+                    course.coursename = data.text();
+                    course.courseUrl = data.attr('href');
+
+                    scrapeCourseInformation(course.courseUrl, course, Json);
+
 
                 });
 
 
+
             }
 
-        })
+
+
+        });
+
     }
+
+
+
 
 
 };
 
-var scrapeCourseInformation = function(url){
-    var $, courseCode, courseText;
+var scrapeCourseInformation = function(url, courseObj, jsonObj){
+    var $, courseCode, courseText, coursePlanUrl;
     request(url, function (error, response, body) {
         $ = cheerio.load(body);
 
         courseCode = $('#header-wrapper ul li:last-child').text();
         if(courseCode.length == 6){
-            json.courseCode = courseCode;
+            courseObj.courseCode = courseCode;
         } else{
-            json.courseCode = "No Information!";
+            courseObj.courseCode = "No Information!";
         }
 
-        courseText = $('.entry-content :first-child').next().text();
-        console.log(courseText);
+        courseObj.courseText = $('.entry-content p').text();
+        $('section .menu-item a').filter(function(){
+            var data = $(this);
+            if(data.text().match("Kursplan")){
+                courseObj.coursePlanUrl = data.attr('href');
+            }
+        });
+
+        var latestPost = $('#latest-post').parent().next().text();
+        jsonObj.courses.push(courseObj);
+        console.log(jsonObj);
+
+    });
 
 
-    })
 };
 
 module.exports = app;
