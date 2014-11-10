@@ -11,17 +11,37 @@ var Json = {courses: [], latestScrape: "", numberOfCourses: ""};
 var jsonToClient;
 
 
+/* GET users listing. */
+app.get('/', function(req, res) {
+
+    readFromFile();
+
+    var timeout = setTimeout(function () {
+
+        res.send(jsonToClient);
+    }, 10000)
+
+});
+
 var readFromFile = function(){
     fs.readFile('data.json', function(err, data) {
-        var json = JSON.parse(data);
+        console.log(data);
+        if(data !== undefined){
+            var json = JSON.parse(data);
 
 
-        //make new scrape if 1 minute has passed since the last scrape
-        if (Date.now() - Json.latestScrape > 60000){
+            //make new scrape if 5 minutes has passed since the last scrape
+            if (Date.now() - json.latestScrape > 300000){
+                startScrape();
+
+            } else{
+                jsonToClient = JSON.stringify(json);
+            }
+
+        } else{
             startScrape();
         }
-
-    });
+    })
 
 };
 
@@ -29,6 +49,10 @@ var writeToFile = function(jsonObj){
     fs.writeFile('data.json', JSON.stringify(jsonObj));
 
 };
+
+function getNoInformation(){
+    return "No Information!";
+}
 
 var startScrape = function(){
     var url = "http://coursepress.lnu.se/kurser/?bpage=1";
@@ -45,27 +69,15 @@ var startScrape = function(){
 
         scrapeCourseNameAndUrl(lastPage, function(){
             console.log('callback');
+
             writeToFile(Json);
             jsonToClient = JSON.stringify(Json);
+
         });
 
 
     });
 };
-
-/* GET users listing. */
-app.get('/', function(req, res) {
-
-    readFromFile();
-
-    var timeout = setTimeout(function(){
-
-
-        res.send(jsonToClient);
-    },30000)
-
-
-});
 
 var scrapeCourseNameAndUrl = function(lastPage, callback) {
     var $;
@@ -77,7 +89,7 @@ var scrapeCourseNameAndUrl = function(lastPage, callback) {
     for (var i = 1; i <= lastPage; i++) {
 
         var url = "http://coursepress.lnu.se/kurser/?bpage=" + i;
-        request(url, function (error, response, body) {
+        request(url,  function (error, response, body) {
 
             if (!error) {
 
@@ -85,13 +97,18 @@ var scrapeCourseNameAndUrl = function(lastPage, callback) {
 
                 $('.item-title a').filter(function () {
 
-                    var course = {coursename: "", courseUrl: "", courseCode: "", courseText: "", coursePlanUrl: "",
-                        Post: {Author: "", Time: "", Title: ""}};
                     var data = $(this);
-                    course.coursename = data.text();
-                    course.courseUrl = data.attr('href');
 
-                    scrapeCourseInformation(course.courseUrl, course, Json, lastPage, callback);
+                    if (data.attr('href').match(/kurs/)) {
+                        console.log("ny kurs");
+                        var course = {coursename: "", courseUrl: "", courseCode: "", courseText: "", coursePlanUrl: "",
+                            Post: {Author: "", Time: "", Title: ""}};
+
+                        course.coursename = data.text();
+                        course.courseUrl = data.attr('href');
+
+                        scrapeCourseInformation(course.courseUrl, course, Json, lastPage, callback);
+                    }
 
                 });
             }
@@ -107,34 +124,51 @@ var scrapeCourseInformation = function(url, courseObj, jsonObj, lastPage, callba
         $ = cheerio.load(body);
 
         courseCode = $('#header-wrapper ul li:last-child').text();
+        //Not a great solution
         if(courseCode.length == 6){
             courseObj.courseCode = courseCode;
         } else{
-            courseObj.courseCode = "No Information!";
+            courseObj.courseCode = getNoInformation();
         }
 
         //TODO improve this match
-        courseObj.courseText = $('.entry-content p').text();
+        courseObj.courseText = $('.entry-content p').first().text();
 
         $('section .menu-item a').filter(function(){
             var data = $(this);
-            if(data.text().match("Kursplan")){
+            if(data.text().match("Kursplan") || data.text().match("Course Syllabus") || data.text().match("Course Plan")){
                 courseObj.coursePlanUrl = data.attr('href');
             }
         });
 
-        courseObj.Post.Author = $('.entry-header .entry-byline strong').first().text();
-        courseObj.Post.Title = $('.entry-header .entry-title').first().text();
+        if(courseObj.coursePlanUrl === null ||courseObj.coursePlanUrl.length <= 0){
+            courseObj.coursePlanUrl = getNoInformation();
+        }
+
+        if ($('.entry-header .entry-byline strong').first().text().length > 0) {
+            courseObj.Post.Author = $('.entry-header .entry-byline strong').first().text();
+
+        } else{
+            courseObj.Post.Author = getNoInformation();
+        }
+
+        if ($('.entry-header .entry-title').first().text().length > 0 ){
+            courseObj.Post.Title = $('.entry-header .entry-title').first().text();
+
+        } else{
+            courseObj.Post.Title = getNoInformation();
+        }
 
         var postDate = $('.entry-header .entry-byline').text();
         var date = postDate.match(/\d{4}-\d{2}-\d{2}/);
         var time = postDate.match(/\d{2}:\d{2}/);
 
 
-        if (date !== null) {
+        if (date !== null && time !== null) {
             courseObj.Post.Time = date[0] + " " + time[0];
+
         } else{
-            courseObj.Post.Time = "No Information";
+            courseObj.Post.Time = getNoInformation();
         }
         jsonObj.numberOfCourses = jsonObj.courses.length;
         jsonObj.courses.push(courseObj);
