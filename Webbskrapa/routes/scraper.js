@@ -4,7 +4,7 @@
 var express = require('express');
 var fs = require('fs');
 var request = require('request');
-var cheerio = require('cheerio');
+var cheerio = require('cheerio'); // core JQUERY specifically for the server
 var app = express();
 
 var Json = {courses: [], latestScrape: "", numberOfCourses: ""};
@@ -16,9 +16,10 @@ app.get('/', function(req, res) {
 
     readFromFile();
 
-    var timeout = setTimeout(function () {
+    setTimeout(function () {
 
         res.send(jsonToClient);
+
     }, 10000)
 
 });
@@ -57,7 +58,10 @@ function getNoInformation(){
 var startScrape = function(){
     var url = "http://coursepress.lnu.se/kurser/?bpage=1";
 
-    request(url, function (error, resp, body) {
+    //Maybe should use an user-agent instead
+    var identifier = "Tobias Holst, Webbskrapa, th222fa@student.lnu.se";
+
+    request(url, identifier, function (error, resp, body) {
         var lastPage;
         var $ = cheerio.load(body);
 
@@ -67,7 +71,7 @@ var startScrape = function(){
         //using slice to get the last character containing the last pagenumber
         lastPage = lastPage.slice(-1);
 
-        scrapeCourseNameAndUrl(lastPage, function(){
+        scrapeCourseNameAndUrl(lastPage, identifier, function(){
             console.log('callback');
 
             writeToFile(Json);
@@ -79,7 +83,7 @@ var startScrape = function(){
     });
 };
 
-var scrapeCourseNameAndUrl = function(lastPage, callback) {
+var scrapeCourseNameAndUrl = function(lastPage, identifier, callback) {
     var $;
     var date = new Date();
 
@@ -89,7 +93,7 @@ var scrapeCourseNameAndUrl = function(lastPage, callback) {
     for (var i = 1; i <= lastPage; i++) {
 
         var url = "http://coursepress.lnu.se/kurser/?bpage=" + i;
-        request(url,  function (error, response, body) {
+        request(url, identifier, function (error, response, body) {
 
             if (!error) {
 
@@ -107,7 +111,7 @@ var scrapeCourseNameAndUrl = function(lastPage, callback) {
                         course.coursename = data.text();
                         course.courseUrl = data.attr('href');
 
-                        scrapeCourseInformation(course.courseUrl, course, Json, lastPage, callback);
+                        scrapeCourseInformation(course.courseUrl, course, Json, lastPage, identifier, callback);
                     }
 
                 });
@@ -117,10 +121,10 @@ var scrapeCourseNameAndUrl = function(lastPage, callback) {
 
 };
 
-var scrapeCourseInformation = function(url, courseObj, jsonObj, lastPage, callback){
+var scrapeCourseInformation = function(url, courseObj, jsonObj, lastPage, identifier, callback){
     var $, courseCode;
 
-    request(url, function (error, response, body) {
+    request(url, identifier, function (error, response, body) {
         $ = cheerio.load(body);
 
         courseCode = $('#header-wrapper ul li:last-child').text();
