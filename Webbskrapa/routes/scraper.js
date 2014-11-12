@@ -16,11 +16,11 @@ app.get('/', function(req, res) {
 
     readFromFile();
 
-    setTimeout(function () {
+   var timeout = setTimeout(function () {
 
         res.send(jsonToClient);
 
-    }, 10000)
+    }, 60000)
 
 });
 
@@ -73,7 +73,7 @@ var startScrape = function(){
 
         scrapeCourseNameAndUrl(lastPage, identifier, function(){
             console.log('callback');
-
+            Json.courses.sort(Json.courses.coursename);
             writeToFile(Json);
             jsonToClient = JSON.stringify(Json);
 
