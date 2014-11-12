@@ -20,12 +20,14 @@
     Man behöver skicka med viewstaten
     
 ### Välj ut två punkter kring din kod du tycker är värd att diskutera vid redovisningen. Det kan röra val du gjort, tekniska lösningar eller lösningar du inte är riktigt nöjd med.
-    Använder en timeout för hur lång tid det skall ta innan JSON-strängen skall skrivas ut. Skriver till fil varje gång callbacken i 
-    funktionen startScrape anropas. 
+    Använder en timeout för hur lång tid det skall ta innan JSON-strängen skall skrivas ut. 
+    Skriver till fil varje gång callbacken i funktionen startScrape anropas. 
     
 ### Hitta ett rättsfall som handlar om webbskrapning. Redogör kort för detta.
-    2008 Utreddes ett fall för webbskrapning då Aaron Swartz skrapade ner en del av databasen Public Access to Court Electronic Records (PACER och 
-    och publicerade datat. Dett var annars en tjänst som tog ut en mindre avgift.
+    2008 Utreddes ett fall för webbskrapning då Aaron Swartz skrapade ner en del av databasen 
+    Public Access to Court Electronic Records (PACER) och publicerade datat. 
+    Detta var annars en tjänst som tog ut en mindre avgift.
 
 ### Känner du att du lärt dig något av denna uppgift?
-    Absolut! Har aldrig utvecklat  i Node innan så det har varit en nyttig erfarenhet men det är mycket kvar att lära. 
+    Absolut! Har aldrig utvecklat  i Node innan så det har varit en nyttig erfarenhet
+     men det är mycket kvar att lära. 
