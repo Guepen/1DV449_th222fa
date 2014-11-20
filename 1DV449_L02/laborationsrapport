@@ -1,0 +1,7 @@
+### Säkerhetshål hittade
+    Ej parametriserade sql-frågor
+    Dålig hashning
+    Åtkomst beviljas till mess.php utan att man är inloggad
+    ingen utloggning utan bara redirect
+    inmatning av scripttaggar tillåts i namn och meddelandefälten
+    
