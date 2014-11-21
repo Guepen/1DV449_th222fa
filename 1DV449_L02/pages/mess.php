@@ -4,6 +4,7 @@ require_once("./check.php");
 
 
 function renderMessagePage(){
+
     echo '
             <!DOCTYPE html>
 <html lang="sv">
@@ -18,15 +19,16 @@ function renderMessagePage(){
     <link rel="apple-touch-icon" sizes="120x120" href="touch-icon-iphone-retina.png">
     <link rel="apple-touch-icon" sizes="152x152" href="touch-icon-ipad-retina.png">
     <link rel="shortcut icon" href="./pic/favicon.png">
+    <script src="./js/jquery.js"></script>
     <link rel="stylesheet" type="text/css" href="./css/bootstrap.css" />
     <link rel="stylesheet" type="text/css" href="./css/mess.css" />
-
+    <script src="./Message.js"></script>
 	<script type="text/javascript" src="./js/jquery.js"></script>
 	<script type="text/javascript" src="./js/longpoll.js"></script>
-	<script src="./js/jquery.js"></script>
+
 	<script src="./MessageBoard.js"></script>
 	<script src="./js/script.js"></script>
-	<script src="./Message.js"></script>
+
 
 	<title>Messy Labbage</title>
   </head>
@@ -42,26 +44,32 @@ function renderMessagePage(){
                 <div id="messagearea"></div>
 
                 <p id="numberOfMess">Antal meddelanden: <span id="nrOfMessages">0</span></p>
-Name:<br /> <input id="inputName" type="text" name="name" /><br />
-                Message: <br />
+
+                <form id="formPostChat" method="post">
+                Name:<br/>
+                <input id="inputName" type="text" name="name" /><br/>
+                 Message: <br />
                 <textarea name="mess" id="inputText" cols="55" rows="6"></textarea>
-                <input class="btn btn-primary" type="button" id="buttonSend" value="Write your message" />
+                <input class="btn btn-primary" name="submitMess" type="submit" id="buttonSend" value="Write your message" />
+                </form>
                 <span class="clear">&nbsp;</span>
+
 
             </div>
 
         </div>
 
         <!-- This script is running to get the messages -->
-			<script>
-$(document).ready(function() {
-    MessageBoard.getMessages();
-});
-			</script>
+
 			<script src="./js/bootstrap.js"></script>
 	</body>
 	</html>';
+
 }
+
+
+
+
 
 
 

@@ -8,23 +8,26 @@
 
 require_once("./check.php");
 
-    function logInControl(){
-        if(isset($_POST['logout'])){
-            unset($_SESSION['username']);
-        }
-        if(isset($_SESSION['username'])){
+function logInControl(){
+    if(isset($_POST['logout'])){
+        unset($_SESSION['username']);
+    }
+    if(isset($_SESSION['username'])){
+        renderMessagePage();
+    } else if(isset($_POST['submit'])) {
+        if(isLoggedin()){
             renderMessagePage();
-        } else if(isset($_POST['submit'])) {
-            if(isLoggedin()){
-                renderMessagePage();
-            }
-        } else {
-            renderLoginForm();
         }
+    } else {
+        renderLoginForm();
     }
 
-    function renderLoginForm(){
-        echo '
+
+
+}
+
+function renderLoginForm(){
+    echo '
         <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -39,6 +42,7 @@ require_once("./check.php");
     <title>Mezzy Labbage - Logga in</title>
 
     <link href="./css/bootstrap.css" rel="stylesheet">
+    	<script type="text/javascript" src="./js/jquery.js"></script>
 		<script src="./js/bootstrap.js"></script>
   </head>
 
@@ -56,4 +60,4 @@ require_once("./check.php");
   </body>
 </html>';
 
-    }
+}
