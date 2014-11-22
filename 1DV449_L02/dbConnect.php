@@ -7,6 +7,10 @@
  */
 require_once("./settings.php");
 
+/**
+ * creates connection to db
+ * @return bool|PDO
+ */
 function db(){
     try {
         $db = new PDO(getDbConnectionstring(), getDbUsername(), getDbPass());
