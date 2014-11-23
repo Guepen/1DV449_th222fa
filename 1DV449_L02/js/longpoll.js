@@ -13,15 +13,11 @@ function MessageHandler(){
             timeout: 5000,
             cache: false,
             success : function(data){
-                console.log(data);
                 if(data.result){
                     callback(data.message);
                 }
             },
 
-            error: function(XMLHttpRequest, textStatus, errorThrown){
-                console.log(XMLHttpRequest);
-            },
             complete: function(){
                 setTimeout(function(){
                     that.getMessage(callback);
@@ -40,14 +36,6 @@ function MessageHandler(){
                 mode: 'post',
                 user: user,
                 message: message
-            },
-            complete: function(data){
-              if(data.result == false){
-                  alert(data.output);
-              }
-            },
-            error: function(XMLHttpRequest, textStatus, errorThrown){
-                console.log(XMLHttpRequest.HEADERS_RECEIVED + "error: " + textStatus + "(" + errorThrown + ")");
             }
         });
     };

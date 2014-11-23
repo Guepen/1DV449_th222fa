@@ -32,7 +32,7 @@ class NewMessage{
         if(!empty($name) || !empty($message)) {
             addToDB($message, $name);
         } else {
-            $this->output(false, "You must enter both a namne and a message");
+            $this->output(false, "You must enter both a namne and a message", array());
         }
 
     }
