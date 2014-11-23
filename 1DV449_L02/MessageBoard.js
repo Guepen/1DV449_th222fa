@@ -18,14 +18,14 @@ var MessageBoard = {
             this.className = "blur"
         };
         document.getElementById("buttonSend").onclick = function (e) {
-            MessageBoard.sendMessage();
+            MessageBoard.sendMessage(e);
         };
 
         MessageBoard.textField.onkeypress = function (e) {
             if (!e) var e = window.event;
 
             if (e.keyCode == 13 && !e.shiftKey) {
-                MessageBoard.sendMessage();
+                MessageBoard.sendMessage(e);
 
                 return false;
             }
@@ -51,72 +51,69 @@ var MessageBoard = {
         });
     },
 
-    sendMessage: function(){
-        $('#formPostChat').submit(function (e) {
-            MessageBoard.textField.innerHTML = "";
-            MessageBoard.nameField.innerHTML = "";
-            e.preventDefault();
-            var user = $('#inputName');
-            var text = $('#inputText');
-            messageHandler.postMessage(user.val(), text.val());
+    sendMessage: function(e){
+        e.preventDefault();
+        var user = $('#inputName');
+        var text = $('#inputText');
+        MessageBoard.textField.innerHTML = "";
+        MessageBoard.nameField.innerHTML = "";
+        messageHandler.postMessage(user.val(), text.val());
 
-        });
     },
 
     renderMessage: function(messageID){
         // Message div
         var div = document.createElement("div");
         div.className = "message";
-       
+
         // Clock button
         aTag = document.createElement("a");
         aTag.href="#";
         aTag.onclick = function(){
-			MessageBoard.showTime(messageID);
-			return false;			
-		}
-        
+            MessageBoard.showTime(messageID);
+            return false;
+        }
+
         var imgClock = document.createElement("img");
         imgClock.src="pic/clock.png";
         imgClock.alt="Show creation time";
-        
+
         aTag.appendChild(imgClock);
         div.appendChild(aTag);
-       
+
         // Message text
         var text = document.createElement("p");
-        console.log( MessageBoard.messages);
-        text.innerHTML = MessageBoard.messages[messageID].getHTMLText();        
+        text.innerHTML = MessageBoard.messages[messageID].getHTMLText();
         div.appendChild(text);
-            
+
         // Time - Should fix on server!
         var spanDate = document.createElement("span");
         spanDate.appendChild(document.createTextNode(MessageBoard.messages[messageID].getDateText()))
 
-        div.appendChild(spanDate);        
-        
+        div.appendChild(spanDate);
+
         var spanClear = document.createElement("span");
         spanClear.className = "clear";
 
-        div.appendChild(spanClear);        
-        
+        div.appendChild(spanClear);
+
         MessageBoard.messageArea.insertBefore(div, MessageBoard.messageArea.firstChild);
     },
     removeMessage: function(messageID){
-		if(window.confirm("Vill du verkligen radera meddelandet?")){
-        
-			MessageBoard.messages.splice(messageID,1); // Removes the message from the array.
-        
-			MessageBoard.renderMessages();
+        if(window.confirm("Vill du verkligen radera meddelandet?")){
+
+            MessageBoard.messages.splice(messageID,1); // Removes the message from the array.
+
+            MessageBoard.renderMessages();
         }
     },
     showTime: function(messageID){
-         
-         var time = MessageBoard.messages[messageID].getDate();
-         
-         var showTime = "Created "+time.toLocaleDateString()+" at "+time.toLocaleTimeString();
 
-         alert(showTime);
+        var time = MessageBoard.messages[messageID].getDate();
+
+        var showTime = "Created "+time.toLocaleDateString()+" at "+time.toLocaleTimeString();
+
+        alert(showTime);
     }
 
 };

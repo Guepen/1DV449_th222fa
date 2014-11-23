@@ -41,8 +41,10 @@ function MessageHandler(){
                 user: user,
                 message: message
             },
-            success: function(){
-               alert("meddelandet lades till!");
+            complete: function(data){
+              if(data.result == false){
+                  alert(data.output);
+              }
             },
             error: function(XMLHttpRequest, textStatus, errorThrown){
                 console.log(XMLHttpRequest.HEADERS_RECEIVED + "error: " + textStatus + "(" + errorThrown + ")");

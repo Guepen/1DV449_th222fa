@@ -18,21 +18,5 @@ function addToDB($message, $user) {
         return false;
     }
 
-	try {
-        $q = "SELECT * FROM users WHERE username = ?";
-        $params = array($user);
-		$stm = $db->prepare($q);
-		$stm->execute($params);
-		$result = $stm->fetchAll();
-		if(!$result) {
-			return "Could not find the user";
-		}
-	}
-	catch(PDOException $e) {
-		return false;
-	}
-	// Send the message back to the client
-	echo "Message saved by user: " .json_encode($result);
-	
 }
 

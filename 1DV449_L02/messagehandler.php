@@ -29,7 +29,12 @@ class NewMessage{
     private function postMessage(){
         $name = strip_tags($this->fetch('user'));
         $message = strip_tags($this->fetch('message'));
-        addToDB($message, $name);
+        if(!empty($name) || !empty($message)) {
+            addToDB($message, $name);
+        } else {
+            $this->output(false, "You must enter both a namne and a message");
+        }
+
     }
 
     private function getMessage(){
@@ -50,7 +55,7 @@ class NewMessage{
                     $newMessages[] = $result[$i];
                 }
 
-                $this->output(true, '', $newMessages);
+                $this->output(true, '', array_reverse($newMessages));
             } else {
                 sleep(1);
             }

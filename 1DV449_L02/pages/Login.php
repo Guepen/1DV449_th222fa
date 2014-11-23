@@ -7,6 +7,7 @@
  */
 
 require_once("./check.php");
+require_once("./dbConnect.php");
 
 function logInControl(){
     if(isset($_POST['logout'])){
