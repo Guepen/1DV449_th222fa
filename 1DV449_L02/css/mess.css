@@ -1,44 +1,37 @@
-
 body{
-    margin:0;
-    padding:0;
-
     background-color:#C3D9FF;
-    background-image:url(../pic/logo.png);
-    background-repeat:no-repeat;
-    background-position:center top;
-    height:4000px;
-    padding-top:200px;
-
-    font-family:verdana, helvetica, Sans-Serif;
-    font-size:12px;
-}
-
-#container {
-
-
 }
 
 #messageboard{
-    width:600px;
+    padding-left: 5px;
+    padding-right: 5px;
     margin:auto;
-    border:1px solid silver;
-    background:white;
-    padding:10px;
+    background-color: #f5f5f5;
+    background-image:url(../pic/logo.png);
+    background-repeat:no-repeat;
+    background-position:center top;
+    padding-top:260px;
+    width:600px;
     padding-bottom:20px;
+    font-family:verdana, helvetica, Sans-Serif;
+    font-size:12px;
+    margin-bottom: 50px;
 }
 
 
-
+.logout{
+    width:150px ;
+    margin-bottom: 20px;
+}
 #numberOfMess {
     float:right;
     font-size:small;
     color:Gray;
 }
 
-html {background:url(../pic/b.jpg);}
 
 .message {
+    margin: auto;
     width:590px;
     background-color:#CDEB8B;
     color:gray;
@@ -100,4 +93,46 @@ html {background:url(../pic/b.jpg);}
 .clear {
     clear:both;
 
+}
+
+#Loginpage {
+    padding-top: 40px;
+    padding-bottom: 40px;
+    background-color: #eee;
+    height: 800px;
+}
+
+.form-signin {
+    max-width: 330px;
+    padding: 15px;
+    margin: 0 auto;
+}
+.form-signin .form-signin-heading,
+.form-signin .checkbox {
+    margin-bottom: 10px;
+}
+.form-signin .checkbox {
+    font-weight: normal;
+}
+.form-signin .form-control {
+    position: relative;
+    font-size: 16px;
+    height: auto;
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.form-signin .form-control:focus {
+    z-index: 2;
+}
+.form-signin input[type="text"] {
+    margin-bottom: -1px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+.form-signin input[type="password"] {
+    margin-bottom: 10px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }

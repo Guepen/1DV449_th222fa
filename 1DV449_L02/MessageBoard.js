@@ -26,8 +26,6 @@ var MessageBoard = {
 
             if (e.keyCode == 13 && !e.shiftKey) {
                 MessageBoard.sendMessage(e);
-
-                return false;
             }
         };
 
@@ -36,9 +34,8 @@ var MessageBoard = {
 
     getMessages: function(){
         messageHandler.getMessage(function(messages){
-            console.log(messages);
             for(var i = 0; i < messages.length; i++) {
-                console.log(messages[i].msgTime);
+
                 var text = messages[i].name +" said:\n" +messages[i].message;
                 var message = new Message(text, new Date(messages[i].msgTime));
                 MessageBoard.messages.push(message);
@@ -55,8 +52,8 @@ var MessageBoard = {
         e.preventDefault();
         var user = $('#inputName');
         var text = $('#inputText');
-        MessageBoard.textField.innerHTML = "";
-        MessageBoard.nameField.innerHTML = "";
+        MessageBoard.textField.textContent = "";
+        MessageBoard.nameField.textContent = "";
         messageHandler.postMessage(user.val(), text.val());
 
     },
@@ -99,14 +96,7 @@ var MessageBoard = {
 
         MessageBoard.messageArea.insertBefore(div, MessageBoard.messageArea.firstChild);
     },
-    removeMessage: function(messageID){
-        if(window.confirm("Vill du verkligen radera meddelandet?")){
 
-            MessageBoard.messages.splice(messageID,1); // Removes the message from the array.
-
-            MessageBoard.renderMessages();
-        }
-    },
     showTime: function(messageID){
 
         var time = MessageBoard.messages[messageID].getDate();

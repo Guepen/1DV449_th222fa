@@ -6,11 +6,16 @@
  * Time: 13:23
  */
 require_once("dbConnect.php");
-require_once("post.php");
 
 new NewMessage();
 
+/**
+ * Class NewMessage
+ * Inspired by http://portal.bluejack.binus.ac.id/tutorials/webchatapplicationusinglong-pollingtechnologywithphpandajax
+ */
 class NewMessage{
+
+
     public function __construct(){
 
         $mode = $this->fetch('mode');
@@ -27,54 +32,80 @@ class NewMessage{
     }
 
     private function postMessage(){
+
         $name = strip_tags($this->fetch('user'));
         $message = strip_tags($this->fetch('message'));
-        if(!empty($name) || !empty($message)) {
-            addToDB($message, $name);
+        if(empty($name) || empty($message)) {
+            $this->output(false, "You must enter both a namne and a message");
+            return false;
+
         } else {
-            $this->output(false, "You must enter both a namne and a message", array());
-        }
+            $db = db();
 
-    }
+            try {
+                $q = "INSERT INTO messages (message, name) VALUES(?, ?)";
+                $params = array($message,$name);
+                $stm = $db->prepare($q);
+                $stm->execute($params);
 
-    private function getMessage(){
-        $numberOfMessages = $this->fetch('numberOfMessages');
-
-        $db = db();
-
-        try {
-            $q = "SELECT * FROM messages ORDER BY msgTime DESC";
-            $stm = $db->prepare($q);
-            $stm->execute();
-            $result = $stm->fetchAll();
-
-            if (!empty($result) && $numberOfMessages < count($result)) {
-                $newMessages = array();
-                $numberOfNewMessages = count($result) - $numberOfMessages;
-                for($i = 0; $i < $numberOfNewMessages; $i++){
-                    $newMessages[] = $result[$i];
-                }
-
-                $this->output(true, '', array_reverse($newMessages));
-            } else {
-                sleep(1);
+            } catch (PDOException $e) {
+                return false;
             }
-        } catch (PDOException $e) {
-            return;
+
         }
+
     }
 
+    private function getMessage() {
+        $endTime = time() + 20;
+        $numberOfMessages = $this->fetch('numberOfMessages');
+        $lasttime = $this->fetch('lastTime');
+        $currentTime = null;
+
+
+
+        while (time() < $endTime) {
+
+            try {
+                $db = db();
+                $q = "SELECT * FROM messages ORDER BY msgTime DESC";
+                $stm = $db->prepare($q);
+                $stm->execute();
+                $result = $stm->fetchAll();
+
+                $currentTime = strtotime($result[0]["msgTime"]);
+
+                if(!empty($result) && $currentTime != $lasttime){
+                    $newMessages = array();
+                    $numberOfNewMessages = count($result) - $numberOfMessages;
+                    for ($i = 0; $i < $numberOfNewMessages; $i++) {
+                        $newMessages[] = $result[$i];
+                    }
+
+                    $this->output(true, "", array_reverse($newMessages), $currentTime);
+                    break;
+                }
+                else{
+                    sleep(1);
+                }
+            } catch (PDOException $e) {
+
+            }
+
+        }
+    }
 
 
     private function fetch($name){
         $val = isset($_POST[$name]) ? $_POST[$name] : 0;
         return ($val);
     }
-    private function output($result,$output,$message = null){
+    private function output($result,$output,$message = null, $latest=null){
         echo json_encode(array(
             'result' => $result,
             'message' => $message,
             'output' => $output,
+            'latest' => $latest
         ));
     }
 }

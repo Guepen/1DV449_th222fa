@@ -3,28 +3,32 @@
  */
 function MessageHandler(){
 
-    this.getMessage = function(callback) {
+    this.getMessage = function(callback, lastTime) {
+        var latest = null;
+
         var that = this;
         $.ajax({
             type: "POST",
             url: "messagehandler.php",
             dataType: 'json',
-            data: {mode: 'get', numberOfMessages: MessageBoard.messages.length},
-            timeout: 5000,
+            data: {mode: 'get', numberOfMessages: MessageBoard.messages.length, lastTime: lastTime},
+            timeout: 30000,
             cache: false,
-            success : function(data){
-                if(data.result){
+            success: function (data) {
+                if (data.result) {
+                    console.log(data);
                     callback(data.message);
+                    latest = data["latest"];
                 }
             },
 
-            complete: function(){
-                setTimeout(function(){
-                    that.getMessage(callback);
-                },500)
-
+            complete: function () {
+                that.getMessage(callback, latest);
             }
+
+
         })
+
     };
 
     this.postMessage = function(user, message){
@@ -36,6 +40,13 @@ function MessageHandler(){
                 mode: 'post',
                 user: user,
                 message: message
+            },
+
+            success: function(data){
+                console.log(data);
+                if(data.result == false)
+                alert(data.output);
+
             }
         });
     };
