@@ -33,7 +33,7 @@ var MessageBoard = {
     },
 
     getMessages: function(){
-        messageHandler.getMessage(function(messages){
+        messageHandler.getNewMessages(function(messages){
             for(var i = 0; i < messages.length; i++) {
 
                 var text = messages[i].name +" said:\n" +messages[i].message;

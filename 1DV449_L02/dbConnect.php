@@ -17,6 +17,7 @@ function db(){
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
     catch(PDOEception $e) {
+        //var_dump($e);
         return false;
     }
     return $db;

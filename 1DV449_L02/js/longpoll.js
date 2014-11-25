@@ -3,7 +3,7 @@
  */
 function MessageHandler(){
 
-    this.getMessage = function(callback, lastTime) {
+    this.getNewMessages = function(callback, lastTime) {
         var latest = null;
 
         var that = this;
@@ -11,19 +11,18 @@ function MessageHandler(){
             type: "POST",
             url: "messagehandler.php",
             dataType: 'json',
-            data: {mode: 'get', numberOfMessages: MessageBoard.messages.length, lastTime: lastTime},
+            data: {mode: 'get', numberOfMessages: MessageBoard.messages.length, latestMessageTime: lastTime},
             timeout: 30000,
             cache: false,
             success: function (data) {
                 if (data.result) {
-                    console.log(data);
                     callback(data.message);
                     latest = data["latest"];
                 }
             },
 
             complete: function () {
-                that.getMessage(callback, latest);
+                that.getNewMessages(callback, latest);
             }
 
 
@@ -39,7 +38,8 @@ function MessageHandler(){
             data: {
                 mode: 'post',
                 user: user,
-                message: message
+                message: message,
+                token: $('#token').val()
             },
 
             success: function(data){

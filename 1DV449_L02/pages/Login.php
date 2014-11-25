@@ -9,11 +9,6 @@
 require_once("./check.php");
 require_once("./dbConnect.php");
 
-//if(session_status() !== PHP_SESSION_ACTIVE){
-
-
-//}
-
 function logInControl(){
 
     if(isset($_POST['logout'])){
@@ -70,7 +65,7 @@ function renderLoginForm(){
 
     <title>Mezzy Labbage - Logga in</title>
 
-    <link href="./css/bootstrap.css" rel="stylesheet">
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
 
   </head>
 
@@ -87,7 +82,7 @@ function renderLoginForm(){
         </div>
     </div>
         <script type="text/javascript" src="./js/jquery-1.10.2.min.js"></script>
-		<script src="./js/bootstrap.js"></script>
+
   </body>
 </html>';
 

@@ -1,8 +1,6 @@
 <?php
 require_once("pages/mess.php");
 require_once("pages/Login.php");
-require_once("SessionHandler.php");
-
 
 /**
  * @return bool
@@ -18,7 +16,8 @@ function isLoggedin()
 
         //if password is verified
         if (logIn($p, getUserPass($u))) {
-            new Session($u);
+            $_SESSION['token'] = uniqid();
+            $_SESSION['user'] = $u;
             return true;
 
         } else {
@@ -28,6 +27,8 @@ function isLoggedin()
     }
     return false;
 }
+
+
 
 /**
  * checks that the input password matches the password in db

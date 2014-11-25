@@ -14,30 +14,46 @@ new NewMessage();
  * Inspired by http://portal.bluejack.binus.ac.id/tutorials/webchatapplicationusinglong-pollingtechnologywithphpandajax
  */
 class NewMessage{
+private $doRequest;
 
 
     public function __construct(){
+        session_start();
+        if(isset($_SESSION['user'])){
+            $mode = $this->fetch('mode');
+            switch($mode){
+                case 'get':
+                    $this->doRequest = true;
+                    $this->getMessage();
+                    break;
+                case 'post':
+                    $this->postMessage();
+                    break;
+            }
 
-        $mode = $this->fetch('mode');
-        switch($mode){
-            case 'get':
-                $this->getMessage();
-                break;
-            case 'post':
-                $this->postMessage();
-                break;
+           session_write_close();
+
 
         }
+
+
 
     }
 
     private function postMessage(){
 
+        $token = $this->fetch('token');
+        var_dump($token);
         $name = strip_tags($this->fetch('user'));
         $message = strip_tags($this->fetch('message'));
         if(empty($name) || empty($message)) {
+            $this->doRequest = false;
             $this->output(false, "You must enter both a namne and a message");
             return false;
+
+        }
+        if($_SESSION['token'] != $token) {
+           http_response_code(403);
 
         } else {
             $db = db();
@@ -59,12 +75,12 @@ class NewMessage{
     private function getMessage() {
         $endTime = time() + 20;
         $numberOfMessages = $this->fetch('numberOfMessages');
-        $lasttime = $this->fetch('lastTime');
-        $currentTime = null;
+        $latestMessageTimeLastCall = $this->fetch('latestMessageTime');
+        $latestMessageTime = null;
 
 
 
-        while (time() < $endTime) {
+        while (time() < $endTime && $this->doRequest == true) {
 
             try {
                 $db = db();
@@ -73,16 +89,17 @@ class NewMessage{
                 $stm->execute();
                 $result = $stm->fetchAll();
 
-                $currentTime = strtotime($result[0]["msgTime"]);
+                $latestMessageTime = strtotime($result[0]["msgTime"]);
 
-                if(!empty($result) && $currentTime != $lasttime){
+                if(!empty($result) && $latestMessageTime != $latestMessageTimeLastCall){
                     $newMessages = array();
                     $numberOfNewMessages = count($result) - $numberOfMessages;
                     for ($i = 0; $i < $numberOfNewMessages; $i++) {
                         $newMessages[] = $result[$i];
                     }
 
-                    $this->output(true, "", array_reverse($newMessages), $currentTime);
+                    $this->output(true, "", array_reverse($newMessages), $latestMessageTime);
+                    if(count($newMessages) > 0)
                     break;
                 }
                 else{
@@ -100,12 +117,12 @@ class NewMessage{
         $val = isset($_POST[$name]) ? $_POST[$name] : 0;
         return ($val);
     }
-    private function output($result,$output,$message = null, $latest=null){
+    private function output($result,$output,$message = null, $latestMessageTime=null){
         echo json_encode(array(
             'result' => $result,
             'message' => $message,
             'output' => $output,
-            'latest' => $latest
+            'latestMessageTime' => $latestMessageTime
         ));
     }
 }

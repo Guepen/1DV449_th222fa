@@ -13,7 +13,7 @@ function renderMessagePage(){
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="./pic/favicon.png">
-    <link rel="stylesheet" type="text/css" href="./css/bootstrap.css" />
+    <link rel="stylesheet" type="text/css" href="./css/bootstrap.min.css" />
     <link rel="stylesheet" type="text/css" href="./css/mess.css" />
 
 
@@ -35,6 +35,7 @@ function renderMessagePage(){
                 <p id="numberOfMess">Antal meddelanden: <span id="nrOfMessages">0</span></p>
 
                 <form id="formPostChat" method="post">
+                <input id="token" type="hidden" class="hidden" value="'.$_SESSION['token'].'" />
                 Name:<br/>
                 <input id="inputName" type="text" name="name" /><br/>
                  Message: <br />
@@ -52,9 +53,8 @@ function renderMessagePage(){
             <script src="./Message.js"></script>
 	        <script type="text/javascript" src="./js/jquery-1.10.2.min.js"></script>
 	        <script type="text/javascript" src="./js/longpoll.js"></script>
-
 	        <script src="./MessageBoard.js"></script>
-			<script src="./js/bootstrap.js"></script>
+
 	</body>
 	</html>';
 
