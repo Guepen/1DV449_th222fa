@@ -18,12 +18,11 @@ private $doRequest;
 
 
     public function __construct(){
-        session_start();
-        if(isset($_SESSION['user'])){
+
             $mode = $this->fetch('mode');
             switch($mode){
                 case 'get':
-                    $this->doRequest = true;
+                   // $this->doRequest = true;
                     $this->getMessage();
                     break;
                 case 'post':
@@ -31,10 +30,10 @@ private $doRequest;
                     break;
             }
 
-           session_write_close();
 
 
-        }
+
+
 
 
 
@@ -43,17 +42,20 @@ private $doRequest;
     private function postMessage(){
 
         $token = $this->fetch('token');
-        var_dump($token);
+        //var_dump($token);
         $name = strip_tags($this->fetch('user'));
         $message = strip_tags($this->fetch('message'));
         if(empty($name) || empty($message)) {
-            $this->doRequest = false;
+            //$this->doRequest = false;
             $this->output(false, "You must enter both a namne and a message");
             return false;
 
         }
+        session_start();
         if($_SESSION['token'] != $token) {
-           http_response_code(403);
+            session_write_close();
+           //http_response_code(403);
+            return false;
 
         } else {
             $db = db();
@@ -80,7 +82,7 @@ private $doRequest;
 
 
 
-        while (time() < $endTime && $this->doRequest == true) {
+        while (time() < $endTime) {
 
             try {
                 $db = db();
@@ -99,8 +101,9 @@ private $doRequest;
                     }
 
                     $this->output(true, "", array_reverse($newMessages), $latestMessageTime);
-                    if(count($newMessages) > 0)
                     break;
+
+
                 }
                 else{
                     sleep(1);
@@ -110,6 +113,7 @@ private $doRequest;
             }
 
         }
+       // $this->output(false, "");
     }
 
 

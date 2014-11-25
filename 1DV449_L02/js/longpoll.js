@@ -15,13 +15,15 @@ function MessageHandler(){
             timeout: 30000,
             cache: false,
             success: function (data) {
+                console.log(data);
                 if (data.result) {
                     callback(data.message);
-                    latest = data["latest"];
+                    latest = data["latestMessageTime"];
                 }
             },
 
             complete: function () {
+                //console.log(xml);
                 that.getNewMessages(callback, latest);
             }
 
