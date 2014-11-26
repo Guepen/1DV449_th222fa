@@ -14,15 +14,12 @@ new NewMessage();
  * Inspired by http://portal.bluejack.binus.ac.id/tutorials/webchatapplicationusinglong-pollingtechnologywithphpandajax
  */
 class NewMessage{
-private $doRequest;
-
 
     public function __construct(){
 
             $mode = $this->fetch('mode');
             switch($mode){
                 case 'get':
-                   // $this->doRequest = true;
                     $this->getMessage();
                     break;
                 case 'post':
@@ -30,23 +27,14 @@ private $doRequest;
                     break;
             }
 
-
-
-
-
-
-
-
     }
 
     private function postMessage(){
 
         $token = $this->fetch('token');
-        //var_dump($token);
         $name = strip_tags($this->fetch('user'));
         $message = strip_tags($this->fetch('message'));
         if(empty($name) || empty($message)) {
-            //$this->doRequest = false;
             $this->output(false, "You must enter both a namne and a message");
             return false;
 
@@ -94,9 +82,6 @@ private $doRequest;
 
                 $latestMessageTime = strtotime($result[0]["msgTime"]);
 
-                /*if($latestMessageTime == $latestMessageTimeLastCall){
-                    var_dump("sammma");
-                }*/
                 if(!empty($result) && $latestMessageTime != $latestMessageTimeLastCall){
                     $newMessages = array();
                     $numberOfNewMessages = count($result) - $numberOfMessages;
@@ -117,13 +102,12 @@ private $doRequest;
             }
 
         }
-       // $this->output(false, "");
+
     }
 
 
     private function fetch($name){
         $val = isset($_POST[$name]) ? $_POST[$name] : 0;
-        var_dump($name, $val);
         return ($val);
     }
     private function output($result,$output,$message = null, $latestMessageTime=null){

@@ -52,9 +52,10 @@ var MessageBoard = {
         e.preventDefault();
         var user = $('#inputName');
         var text = $('#inputText');
-        MessageBoard.textField.textContent = "";
-        MessageBoard.nameField.textContent = "";
         messageHandler.postMessage(user.val(), text.val());
+        user.empty();
+        text.empty();
+
 
     },
 

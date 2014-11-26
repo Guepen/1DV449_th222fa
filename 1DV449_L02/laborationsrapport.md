@@ -92,6 +92,7 @@ När anropet är klart görs ett nytt.
 
 #### Fördelar med Long-Polling
 *  Enkel simulering av Server-Push
+*  "Bra" lösning att ha som fallback om det saknas stöd för Web Sockets
 
 #### Nackdelar med Long-Polling
 *  Servern måste hålla "connectionen" öppen
