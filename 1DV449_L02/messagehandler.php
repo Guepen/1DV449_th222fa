@@ -54,7 +54,7 @@ private $doRequest;
         session_start();
         if($_SESSION['token'] != $token) {
             session_write_close();
-           //http_response_code(403);
+            http_response_code(403);
             return false;
 
         } else {
@@ -77,8 +77,9 @@ private $doRequest;
     private function getMessage() {
         $endTime = time() + 20;
         $numberOfMessages = $this->fetch('numberOfMessages');
-        $latestMessageTimeLastCall = $this->fetch('latestMessageTime');
+        $latestMessageTimeLastCall = $this->fetch('lastTime');
         $latestMessageTime = null;
+        //var_dump($latestMessageTime, $latestMessageTimeLastCall);
 
 
 
@@ -93,6 +94,9 @@ private $doRequest;
 
                 $latestMessageTime = strtotime($result[0]["msgTime"]);
 
+                /*if($latestMessageTime == $latestMessageTimeLastCall){
+                    var_dump("sammma");
+                }*/
                 if(!empty($result) && $latestMessageTime != $latestMessageTimeLastCall){
                     $newMessages = array();
                     $numberOfNewMessages = count($result) - $numberOfMessages;
@@ -119,6 +123,7 @@ private $doRequest;
 
     private function fetch($name){
         $val = isset($_POST[$name]) ? $_POST[$name] : 0;
+        var_dump($name, $val);
         return ($val);
     }
     private function output($result,$output,$message = null, $latestMessageTime=null){

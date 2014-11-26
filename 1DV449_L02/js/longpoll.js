@@ -11,19 +11,17 @@ function MessageHandler(){
             type: "POST",
             url: "messagehandler.php",
             dataType: 'json',
-            data: {mode: 'get', numberOfMessages: MessageBoard.messages.length, latestMessageTime: lastTime},
+            data: {mode: 'get', numberOfMessages: MessageBoard.messages.length, lastTime: lastTime},
             timeout: 30000,
             cache: false,
             success: function (data) {
-                console.log(data);
                 if (data.result) {
                     callback(data.message);
-                    latest = data["latestMessageTime"];
+                    latest = data.latestMessageTime;
                 }
             },
 
             complete: function () {
-                //console.log(xml);
                 that.getNewMessages(callback, latest);
             }
 

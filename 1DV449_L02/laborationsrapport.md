@@ -85,14 +85,20 @@ dessa variablerna finns det inga nya medddelanden om de skulle skilja sig från 
 
 Om det finns nya meddelanden jämförs det hur många meddelanden det finns på klienten och hur många det finns i databasen med hjälp av den skillnaden bestäms hur många
 nya meddelanden det finns. Eftersom jag i min SQL-fråga väljer att sortera på nyaste meddelanden först och jag vet hur många nya meddelanden det finns så kan jag här lägga
-till meddelanden från position noll - antal nya meddelanden från arrayen som ges som svar från databasen i en ny array som sedan skickas ut till klienten.
+till meddelanden från position noll - antal nya meddelanden från arrayen som ges som svar från databasen i en ny array som sedan skickas ut till klienten och loopen bryts.
 
 Om klienten har fått nya meddelanden anropas callbacken med de nya meddelandena som argument. De nya meddelandena renderas sedan ut.
 När anropet är klart görs ett nytt.
 
-#### Fördelar
+#### Fördelar med Long-Polling
+*  Enkel simulering av Server-Push
 
-#### Nackdelar
+#### Nackdelar med Long-Polling
+*  Servern måste hålla "connectionen" öppen
+*  Klienten måste fråga efter data.
+*  Om det är många klienter som samtidigt frågar efter data på servern så kommer det vara många "connections" öpnna vilket inte är bra då webbservrarna är byggda för snabb request/response.
+
+
 
 
 
