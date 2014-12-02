@@ -2,12 +2,8 @@
  * Created by Tobias on 2014-12-01.
  */
 var TrafficBoard = {
-    swedenObj: undefined,
-    map: undefined,
-    infoWindow: undefined,
-    activeInfoWindow: false,
+    swedenMap: undefined,
     trafficMessages: {"all":[], "roadTraffic": [], "publicTransport": [], "plannedInterference": [], "other": []},
-    markers: [],
     roadTrafficCategory: 0,
     publicTransportCategory: 1,
     plannedInterferenceCategory: 2,
@@ -15,28 +11,21 @@ var TrafficBoard = {
     allCategories: 4,
 
     init: function(){
-        TrafficBoard.swedenObj = new Map(62.00, 15.00, 4);
 
+        TrafficBoard.swedenMap = new Map(62.00, 15.00, 4);
+
+        //eventListener for categorySelection
         $( "#categorySelect" ).change(function() {
-            removeMarkers();
+            TrafficBoard.swedenMap.removeMarkers();
+            TrafficBoard.swedenMap.map.setZoom(4);
             TrafficBoard.markers = [];
             $("#messageList").empty();
             TrafficBoard.messagesToAdd();
         });
 
         TrafficBoard.getTrafficPosts();
-        TrafficBoard.renderMap();
     },
 
-    renderMap: function(){
-        /*var that = this;
-        var mapOptions = {
-            center: { lat: that.swedenObj.latitude, lng: that.swedenObj.longitude},
-            zoom: that.swedenObj.zoom
-        };*/
-
-        this.swedenObj.render();
-    },
 
     getTrafficPosts: function(){
         $.ajax({
@@ -129,25 +118,9 @@ var TrafficBoard = {
             div.appendChild(aTag);
             messageListDiv.insertBefore(div, messageListDiv.firstChild);
 
-            message.addMarker();
-
-            aTag.onclick = function () {
-                message.renderInfoWindow();
-            }
+            TrafficBoard.swedenMap.addMarker(message, aTag);
         });
-
-
-
-        // TrafficBoard.trafficMessages[messageId].renderMarker();
-
-
-
     }
-
-
 };
-
-
-
 
 window.onload = TrafficBoard.init;
