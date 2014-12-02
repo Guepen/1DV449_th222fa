@@ -2,7 +2,8 @@ body,html{
     width: 100%; height: 100%;
 }
 
-#messageList{max-height: 460px; overflow: auto;}
+#messageList{max-height: 330px; overflow: auto;}
 
 #mapCanvas {width: 100%; height: 500px;}
+
 

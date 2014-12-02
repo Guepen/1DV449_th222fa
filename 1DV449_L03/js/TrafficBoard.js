@@ -6,87 +6,145 @@ var TrafficBoard = {
     map: undefined,
     infoWindow: undefined,
     activeInfoWindow: false,
-    trafficMessages: [],
+    trafficMessages: {"all":[], "roadTraffic": [], "publicTransport": [], "plannedInterference": [], "other": []},
+    markers: [],
+    roadTrafficCategory: 0,
+    publicTransportCategory: 1,
+    plannedInterferenceCategory: 2,
+    otherCategory: 3,
+    allCategories: 4,
 
     init: function(){
         TrafficBoard.swedenObj = new Map(62.00, 15.00, 4);
+
+        $( "#categorySelect" ).change(function() {
+            removeMarkers();
+            TrafficBoard.markers = [];
+            $("#messageList").empty();
+            TrafficBoard.messagesToAdd();
+        });
 
         TrafficBoard.getTrafficPosts();
         TrafficBoard.renderMap();
     },
 
     renderMap: function(){
-        var that = this;
+        /*var that = this;
         var mapOptions = {
             center: { lat: that.swedenObj.latitude, lng: that.swedenObj.longitude},
             zoom: that.swedenObj.zoom
-        };
-        TrafficBoard.map = new google.maps.Map(document.getElementById('mapCanvas'), mapOptions);
-        TrafficBoard.map.setMapTypeId(google.maps.MapTypeId.SATELLITE);
+        };*/
+
+        this.swedenObj.render();
     },
 
     getTrafficPosts: function(){
-        var request = $.ajax({
+        $.ajax({
             "type": "GET",
             "url": "ajaxCalls/TrafficAlertsHandler.php",
             "dataType": "json",
-            "data": {"mode": "getAlerts"}
-        });
-
-        request.success(function(data){
-            var jsonData = $.parseJSON(data);
-            var messages = jsonData["messages"];
-
-
-            for(var i = 0; i < messages.length; i++){
-                var message = new TrafficMessage(messages[i].createddate,
-                    messages[i].title, messages[i].exactlocation,
-                    messages[i].description, messages[i].subcategory,
-                    messages[i].latitude, messages[i].longitude);
-
-                TrafficBoard.trafficMessages.push(message);
-                TrafficBoard.addMessageToList(TrafficBoard.trafficMessages.length -1);
-
-                message.renderMarker();
-
+            "data": {"mode": "getAlerts"},
+            success: function(data){
+                var jsonData = data;
+                var messages = jsonData["messages"];
+                TrafficBoard.createMessages(messages);
+                TrafficBoard.messagesToAdd();
+                TrafficBoard.renderCredit(jsonData["copyright"]);
             }
-            TrafficBoard.renderCredit(jsonData["copyright"]);
-
         });
-
-        request.fail(function( xhr, textStatus){
-            console.log(xhr, textStatus);
-        })
 
     },
 
+    createMessages: function(messages){
+        for(var i = 0; i < messages.length; i++){
+
+            var message = new TrafficMessage(
+                messages[i].createddate, messages[i].category,
+                messages[i].title, messages[i].exactlocation,
+                messages[i].description, messages[i].subcategory,
+                messages[i].latitude, messages[i].longitude);
+
+            TrafficBoard.pushMessage(message);
+
+        }
+
+    },
+
+    pushMessage: function(message){
+        switch (message.category){
+            case TrafficBoard.roadTrafficCategory:
+                TrafficBoard.trafficMessages.roadTraffic.push(message);
+                TrafficBoard.trafficMessages.all.push(message);
+                break;
+            case TrafficBoard.publicTransportCategory:
+                TrafficBoard.trafficMessages.publicTransport.push(message);
+                TrafficBoard.trafficMessages.all.push(message);
+                break;
+            case TrafficBoard.plannedInterferenceCategory:
+                TrafficBoard.trafficMessages.plannedInterference.push(message);
+                TrafficBoard.trafficMessages.all.push(message);
+                break;
+            case TrafficBoard.otherCategory:
+                TrafficBoard.trafficMessages.other.push(message);
+                TrafficBoard.trafficMessages.all.push(message);
+                break;
+            default :
+                alert("inga meddelade kunde hämtas");
+                break;
+
+        }
+    },
+
     renderCredit: function(creditString){
-        var messageListDiv = document.getElementById("messageList");
+        var messageListDiv = document.getElementById("categoryDiv");
         var p = document.createElement("p");
         p.innerText = creditString;
         messageListDiv.insertBefore(p, messageListDiv.firstChild);
     },
 
-    addMessageToList: function(messageId){
+    messagesToAdd: function(){
+        switch (Number($("#categorySelect").val())){
+            case TrafficBoard.allCategories:
+                TrafficBoard.addMessageToList(TrafficBoard.trafficMessages.all);
+                break;
+
+            case TrafficBoard.roadTrafficCategory:
+                TrafficBoard.addMessageToList(TrafficBoard.trafficMessages.roadTraffic);
+        }
+    },
+
+    addMessageToList: function(messageArray){
+
         var messageListDiv = document.getElementById("messageList");
 
-        var title = this.trafficMessages[messageId].title;
+        messageArray.forEach(function(message){
+            var title = message.title;
 
-        var div = document.createElement("div");
+            var div = document.createElement("div");
 
-        var aTag = document.createElement("a");
-        aTag.href = "#";
-        aTag.innerHTML = title;
+            var aTag = document.createElement("a");
+            aTag.href = "#";
+            aTag.innerText = title;
 
-        div.appendChild(aTag);
-        messageListDiv.insertBefore(div, messageListDiv.firstChild);
+            div.appendChild(aTag);
+            messageListDiv.insertBefore(div, messageListDiv.firstChild);
 
-        var that = this;
-        aTag.onclick = function(){
-           that.trafficMessages[messageId].renderInfoWindow();
-        }
+            message.addMarker();
+
+            aTag.onclick = function () {
+                message.renderInfoWindow();
+            }
+        });
+
+
+
+        // TrafficBoard.trafficMessages[messageId].renderMarker();
+
+
 
     }
+
+
 };
 
 
