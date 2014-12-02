@@ -7,6 +7,7 @@
  */
 require_once('pages/TrafficView.php');
 require_once('pages/EchoHTML.php');
+require_once("settings.php");
 include('../vendor\rmccue\requests\library\Requests.php');
 
 Requests::register_autoloader();

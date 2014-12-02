@@ -21,10 +21,14 @@ class TrafficAlertsHandler {
     }
 
     private function getAlerts(){
-        //$response = Requests::get("http://api.sr.se/api/v2/traffic/messages?format=json&&indent=true");
+/*
+     $response = Requests::get("http://api.sr.se/api/v2/traffic/messages?format=json&&indent=true&&size=100&& sort=createddate+desc");
 
-      /*  if($response->success){
+        if($response->status_code == 200){
             file_put_contents("sr.json", json_encode($response->body));
+            $this->output($response->body);
+        } else{
+            $this->output(file_get_contents("sr.json"));
         }*/
 
         $this->output(file_get_contents("sr.json"));
@@ -35,6 +39,6 @@ class TrafficAlertsHandler {
         return ($val);
     }
     private function output($output){
-      echo($output);
+        echo($output);
     }
 } 
