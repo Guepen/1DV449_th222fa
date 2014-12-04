@@ -2,6 +2,12 @@
  * Created by Tobias on 2014-12-01.
  */
 
+/**
+ * @param latitude
+ * @param longitude
+ * @param zoom
+ * @constructor
+ */
 function Map(latitude, longitude, zoom){
     this.latitude = latitude;
     this.longitude = longitude;
@@ -15,7 +21,11 @@ function Map(latitude, longitude, zoom){
     this.map = new google.maps.Map(document.getElementById('mapCanvas'), this.mapOptions);
 }
 
-
+/**
+ *
+ * @param message reference to a TrafficMessage
+ * @param aTag reference to link in the message list
+ */
 Map.prototype.addMarker = function(message, aTag) {
     var that = this;
     var latLng = new google.maps.LatLng(message.latitude, message.longitude);
@@ -45,11 +55,15 @@ Map.prototype.removeMarkers = function(){
     this.markers = [];
 };
 
+/**
+ * @param message reference to a TrafficMessage
+ * @param marker reference to the clicked marker
+ */
 Map.prototype.renderInfoWindow = function(message, marker){
-    console.log(marker);
     if (this.infoWindow !== undefined) {
         this.infoWindow.close();
     }
+
     var contentString = "<div class='content'> " +
         "<h3>" + message.title + "</h3>"+
         "<h4>"+ message.categoryText+"</h4>"+
@@ -64,7 +78,7 @@ Map.prototype.renderInfoWindow = function(message, marker){
     });
 
     this.map.setZoom(10);
-    this.infoWindow.open(TrafficBoard.map, marker);
+    this.infoWindow.open(this.map, marker);
 };
 
 

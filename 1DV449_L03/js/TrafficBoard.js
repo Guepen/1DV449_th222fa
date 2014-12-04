@@ -34,11 +34,14 @@ var TrafficBoard = {
             "dataType": "json",
             "data": {"mode": "getAlerts"},
             success: function(data){
-                var jsonData = data;
-                var messages = jsonData["messages"];
-                TrafficBoard.createMessages(messages);
-                TrafficBoard.messagesToAdd();
-                TrafficBoard.renderCredit(jsonData["copyright"]);
+
+                if (data.result) {
+                    var jsonData = data;
+                    var messages = jsonData["messages"];
+                    TrafficBoard.createMessages(messages);
+                    TrafficBoard.messagesToAdd();
+                    TrafficBoard.renderCredit(jsonData["copyright"]);
+                }
             }
         });
 
@@ -99,24 +102,39 @@ var TrafficBoard = {
 
             case TrafficBoard.roadTrafficCategory:
                 TrafficBoard.addMessageToList(TrafficBoard.trafficMessages.roadTraffic);
+                break;
+
+            case TrafficBoard.publicTransportCategory:
+                TrafficBoard.addMessageToList(TrafficBoard.trafficMessages.publicTransport);
+                break;
+
+            case TrafficBoard.plannedInterferenceCategory:
+                TrafficBoard.addMessageToList(TrafficBoard.trafficMessages.plannedInterference);
+                break;
+
+            case TrafficBoard.otherCategory:
+                TrafficBoard.addMessageToList(TrafficBoard.trafficMessages.other);
+                break;
         }
     },
 
     addMessageToList: function(messageArray){
 
         var messageListDiv = document.getElementById("messageList");
+        var ul = document.createElement("ul");
 
         messageArray.forEach(function(message){
             var title = message.title;
-
             var div = document.createElement("div");
+            var li = document.createElement("li");
+            ul.appendChild(li);
 
             var aTag = document.createElement("a");
             aTag.href = "#";
             aTag.innerText = title;
 
-            div.appendChild(aTag);
-            messageListDiv.insertBefore(div, messageListDiv.firstChild);
+            li.appendChild(aTag);
+            messageListDiv.insertBefore(li, messageListDiv.firstChild);
 
             TrafficBoard.swedenMap.addMarker(message, aTag);
         });

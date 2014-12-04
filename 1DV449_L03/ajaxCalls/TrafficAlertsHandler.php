@@ -13,17 +13,22 @@ class TrafficAlertsHandler {
     }
 
     private function getAlerts(){
-/*
-        $response = Requests::get("http://api.sr.se/api/v2/traffic/messages?format=json&&indent=true&&size=100&sort=createddate+desc");
+        if(file_get_contents("timeStamp.txt") == null || time() > file_get_contents("timeStamp.txt")) {
 
-        if($response->status_code == 200){
-            file_put_contents("sr.json", $response->body);
-            $this->output($response->body);
-        } else{
+            $response = Requests::get("http://api.sr.se/api/v2/traffic/messages?format=json&indent=true&size=100&sort=createddate+desc");
+
+            //if everything goes fine
+            if ($response->success) {
+                file_put_contents("sr.json", $response->body);
+                //Cache for 5 minutes
+                file_put_contents("timeStamp.txt", strtotime("+5 minutes"));
+                $this->output($response->body);
+            } else {
+                $this->output(file_get_contents("sr.json"));
+            }
+        } else {
             $this->output(file_get_contents("sr.json"));
-        }*/
-
-        $this->output(file_get_contents("sr.json"));
+        }
     }
 
     private function output($output){

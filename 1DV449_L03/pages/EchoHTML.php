@@ -39,12 +39,8 @@ class EchoHTML {
 
 				   </div>
                     <script src='//code.jquery.com/jquery-1.11.0.min.js'></script>
-                     <!-- Latest compiled and minified JavaScript -->
-                    <script src='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js'></script>
-                    <script src ='https://maps.googleapis.com/maps/api/js?key=".$apiKey." '></script>
-                     <script src='js/TrafficMessage.js'></script>
-                      <script src='js/Map.js'></script>
-                    <script src='js/TrafficBoard.js'></script>
+                   <script src ='//maps.googleapis.com/maps/api/js?key=".$apiKey." '></script>
+                   <script src='js/compressedAndObfuscated.js'></script>
 				</body>
 				</html>";
     }
