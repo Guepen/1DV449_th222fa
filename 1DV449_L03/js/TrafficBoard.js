@@ -20,7 +20,12 @@ var TrafficBoard = {
             TrafficBoard.swedenMap.map.setZoom(4);
             TrafficBoard.markers = [];
             $("#messageList").empty();
-            TrafficBoard.messagesToAdd();
+            TrafficBoard.messagesToView();
+        });
+
+        //removes alert-box
+        $(".close").click(function(){
+            $(".alert").remove();
         });
 
         TrafficBoard.getTrafficPosts();
@@ -34,31 +39,48 @@ var TrafficBoard = {
             "dataType": "json",
             "data": {"mode": "getAlerts"},
             success: function(data){
-
-                if (data.result) {
-                    var jsonData = data;
-                    var messages = jsonData["messages"];
+                if (data.messages !== undefined) {
+                    var messages = data.messages;
                     TrafficBoard.createMessages(messages);
-                    TrafficBoard.messagesToAdd();
-                    TrafficBoard.renderCredit(jsonData["copyright"]);
+                    TrafficBoard.messagesToView();
+                    TrafficBoard.renderCredit(data["copyright"]);
                 }
+             else{
+                    TrafficBoard.renderErrorBox("Inga trafikmeddelande kunde tyvärr hämtas");
+                }
+            },
+
+            error: function(){
+                TrafficBoard.renderErrorBox("Det verkar som att Sveriges Radios API för tillfället ligger nere" +
+               " vilket gör att vi tyvärr inte kan presentera några traffikmeddelanden");
             }
         });
 
     },
 
+    renderErrorBox: function(errorMessage){
+        var body = document.getElementById("container");
+        var div = document.createElement("div");
+        div.className = "alert alert-danger";
+
+        var errorText = document.createElement("p");
+        errorText.textContent = errorMessage;
+
+        div.appendChild(errorText);
+        body.insertBefore(div, body.firstChild);
+    },
+
     createMessages: function(messages){
-        for(var i = 0; i < messages.length; i++){
+        messages.forEach(function(message){
 
-            var message = new TrafficMessage(
-                messages[i].createddate, messages[i].category,
-                messages[i].title, messages[i].exactlocation,
-                messages[i].description, messages[i].subcategory,
-                messages[i].latitude, messages[i].longitude);
+            var newMessage = new TrafficMessage(
+                message.createddate, message.category,
+                message.title, message.exactlocation,
+                message.description, message.subcategory,
+                message.latitude, message.longitude);
 
-            TrafficBoard.pushMessage(message);
-
-        }
+            TrafficBoard.pushMessage(newMessage);
+        })
 
     },
 
@@ -80,9 +102,6 @@ var TrafficBoard = {
                 TrafficBoard.trafficMessages.other.push(message);
                 TrafficBoard.trafficMessages.all.push(message);
                 break;
-            default :
-                alert("inga meddelade kunde hämtas");
-                break;
 
         }
     },
@@ -90,11 +109,11 @@ var TrafficBoard = {
     renderCredit: function(creditString){
         var messageListDiv = document.getElementById("categoryDiv");
         var p = document.createElement("p");
-        p.innerText = creditString;
+        p.textContent = creditString;
         messageListDiv.insertBefore(p, messageListDiv.firstChild);
     },
 
-    messagesToAdd: function(){
+    messagesToView: function(){
         switch (Number($("#categorySelect").val())){
             case TrafficBoard.allCategories:
                 TrafficBoard.addMessageToList(TrafficBoard.trafficMessages.all);
@@ -125,13 +144,13 @@ var TrafficBoard = {
 
         messageArray.forEach(function(message){
             var title = message.title;
-            var div = document.createElement("div");
+
             var li = document.createElement("li");
             ul.appendChild(li);
 
             var aTag = document.createElement("a");
             aTag.href = "#";
-            aTag.innerText = title;
+            aTag.textContent = title;
 
             li.appendChild(aTag);
             messageListDiv.insertBefore(li, messageListDiv.firstChild);

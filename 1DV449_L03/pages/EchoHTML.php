@@ -22,17 +22,23 @@ class EchoHTML {
 				<title>Trafikhjälpen</title>
 				</head>
 				<body>
-				   <div class='container' id='container'>
+				   <div class='container container-fluid' id='container'>
+				   <div class='row'>
 				        <div class='page-header'>
                             <h1>Trafikhjälpen
                                 <small>Vi hjälper dig i trafiken!</small>
                             </h1>
 				        </div>
-				         <div class='alert alert-success'>
+				        </div>
+				        <div class='row'>
+				        <div class='col-md-12'>
+				         <div class='alert alert-success '>
                     <a href='#' class='close' data-dismiss='alert'>&times;</a>
                      <h4>Tips!</h4>
-                     <p>Tryck på en markör i kartan eller på en av länkarna i listan nere till höger för att
+                     <p>Tryck på en markör i kartan eller på en av länkarna i listan nere till vänster för att
                      få mer information om trafikmeddelandet</p>
+                    </div>
+                    </div>
                     </div>
 
                     $body
@@ -40,7 +46,8 @@ class EchoHTML {
 				   </div>
                     <script src='//code.jquery.com/jquery-1.11.0.min.js'></script>
                    <script src ='//maps.googleapis.com/maps/api/js?key=".$apiKey." '></script>
-                   <script src='js/compressedAndObfuscated.js'></script>
+                  <!-- <script src='js/compressedAndObfuscated.js'></script> -->
+                 <script src='js/compressedAndObfuscated.js'></script>
 				</body>
 				</html>";
     }

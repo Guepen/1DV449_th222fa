@@ -41,7 +41,6 @@ Map.prototype.addMarker = function(message, aTag) {
         that.renderInfoWindow(message, marker);
     });
 
-    //DRY
     aTag.onclick = function(){
         that.renderInfoWindow(message, marker);
     };
@@ -63,14 +62,15 @@ Map.prototype.renderInfoWindow = function(message, marker){
     if (this.infoWindow !== undefined) {
         this.infoWindow.close();
     }
-
     var contentString = "<div class='content'> " +
-        "<h3>" + message.title + "</h3>"+
-        "<h4>"+ message.categoryText+"</h4>"+
-        "<p>Rapporterat: " + message.getDate() + "</p>"+
-        "<p>"+ message.description + "</p>"+
-        "<p> detaljerad platsbeskrivning: "+ message.location +"</p>"+
+        "<h3>" +this.sanitize(message.title) + "</h3>"+
+        "<h4>"+this.sanitize(message.categoryText)+"</h4>"+
+        "<p>Rapporterat: " +this.sanitize(message.getDate()) + "</p>"+
+        "<p>"+ this.sanitize(message.description) + "</p>"+
+        "<p> detaljerad platsbeskrivning: "+ this.sanitize(message.location) +"</p>"+
         "</div>";
+
+    //textNode.appendChild(contentString);
 
     this.infoWindow = new google.maps.InfoWindow({
         content: contentString,
@@ -79,6 +79,10 @@ Map.prototype.renderInfoWindow = function(message, marker){
 
     this.map.setZoom(10);
     this.infoWindow.open(this.map, marker);
+};
+
+Map.prototype.sanitize = function(content){
+    return content.replace(/</g, "&lt;").replace(/>/g, "&lt;");
 };
 
 

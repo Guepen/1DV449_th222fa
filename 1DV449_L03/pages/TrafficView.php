@@ -10,7 +10,7 @@ class TrafficView {
 
     public function getTrafficView(){
         return "
-
+               <div class='row'>
                 <div class='col-md-4 pull-left messageListDiv'>
                 <div class='pull-left panel panel-info' >
                 <div class='panel-heading'>
@@ -32,8 +32,9 @@ class TrafficView {
                   <div class='col-md-8 map'>
                 <div id='mapCanvas'></div>
                 </div>
-                <footer>
-                <div class='col-md-5 page-header pull-left'>
+                </div>
+                <footer class='row'>
+                <div class='col-md-12 page-header pull-left'>
                 <h3><small>Producerad av <a href='//tobias-holst.se/' target='_blank'>@Tobias Holst</small></h3>
                 <p class='lead'></p>
                 </div>

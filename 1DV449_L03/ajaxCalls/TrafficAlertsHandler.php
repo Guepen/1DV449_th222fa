@@ -11,9 +11,9 @@ class TrafficAlertsHandler {
     public function __construct(){
         $this->getAlerts();
     }
-
     private function getAlerts(){
-        if(file_get_contents("timeStamp.txt") == null || time() > file_get_contents("timeStamp.txt")) {
+
+        if(!file_exists("timeStamp.txt") || time() > file_get_contents("timeStamp.txt")) {
 
             $response = Requests::get("http://api.sr.se/api/v2/traffic/messages?format=json&indent=true&size=100&sort=createddate+desc");
 
@@ -24,7 +24,7 @@ class TrafficAlertsHandler {
                 file_put_contents("timeStamp.txt", strtotime("+5 minutes"));
                 $this->output($response->body);
             } else {
-                $this->output(file_get_contents("sr.json"));
+               $this->output($response->status_code);
             }
         } else {
             $this->output(file_get_contents("sr.json"));
@@ -32,6 +32,6 @@ class TrafficAlertsHandler {
     }
 
     private function output($output){
-        echo($output);
+        echo ($output);
     }
 } 
