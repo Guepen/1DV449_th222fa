@@ -1,11 +1,24 @@
 <html>
-<head><title>{%block title %}This is a page title {% endblock %}</title></head>
+<head>
+    <title>Jobfinder</title>
+    <!-- Latest compiled and minified CSS -->
+    <link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css'>
+    <!-- Optional theme -->
+    <link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css'>
+    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
+    <meta charset="utf-8">
+</head>
 <body>
-<div class="container container-fluid">
-    {% block content%}
-    <h1> Jobfinder </h1>
-    <p> H2O template inheritance is a powerful tool </p>
-    {% endblock %}
-</div>
+    <div class="container container-fluid">
+
+         <h1 class="page-header">
+             Jobfinder
+             <small> Vi hjälper dig att hitta ditt nya jobb och din nya bostad</small>
+         </h1>
+        {% block content %}
+        {% endblock %}
+    </div>
+
+    <script src='//code.jquery.com/jquery-1.11.0.min.js'></script>
 </body>
 </html>
