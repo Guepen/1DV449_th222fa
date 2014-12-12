@@ -9,16 +9,14 @@
     <meta charset="utf-8">
 </head>
 <body>
-    <div class="container container-fluid">
+<div class="container container-fluid">
 
-         <h1 class="page-header">
-             Jobfinder
-             <small> Vi hjälper dig att hitta ditt nya jobb och din nya bostad</small>
-         </h1>
-        {% block content %}
-        {% endblock %}
-    </div>
-
-    <script src='//code.jquery.com/jquery-1.11.0.min.js'></script>
+    {% block nav %}
+    {% endblock %}
+    {% block content %}
+    {% endblock %}
+</div>
+<script src="js/JobBoard.js"></script>
+<script src='//code.jquery.com/jquery-1.11.0.min.js'></script>
 </body>
 </html>

@@ -1,13 +1,26 @@
 {% extends 'base.html' %}
+{% block nav %}
+<div class="row">
+    <div class="col-md-12">
+        <nav class="navbar navbar-inverse" role="navigation">
+            <div class="navbar-header">
+                <p class="navbar-brand">Sök Jobb</p>
+            </div>
+            <div>
+                <button id="location-search" class="btn btn-success navbar-btn">Via ort</button>
+                <button id="occupation-search" class="btn btn-success navbar-btn">Via yrke</button>
+                <button id="text-search" class="btn btn-success navbar-btn">Fritext</button>
+            </div>
+        </nav>
+    </div>
+</div>
+
+{% endblock %}
 {% block content %}
-<nav class="navbar navbar-default" role="navigation">
-    <div class="navbar-header">
-        <p class="navbar-brand">Sök Yrke</p>
+<div class="row">
+    <div class="col-md-12">
+        <div class="jumbotron">
+        </div>
     </div>
-    <div>
-        <button id="location-search" class="btn btn-success navbar-btn">Via ort</button>
-        <button id="occupation-search" class="btn btn-success navbar-btn">Via yrke</button>
-        <button id="text-search" class="btn btn-success navbar-btn">Fritext</button>
-    </div>
-</nav>
+</div>
 {% endblock %}
