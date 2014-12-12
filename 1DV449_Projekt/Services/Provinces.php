@@ -10,6 +10,10 @@ Requests::register_autoloader();
 
 new Provinces();
 
+/**
+ * Class Provinces
+ * Handles the provinces
+ */
 class Provinces {
     public function __construct(){
         $this->getProvinces();
