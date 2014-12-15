@@ -13,7 +13,7 @@ County.prototype.render = function(){
     var ul = $("#countiesList");
     var li = $("<li></li>");
     var countyLink = $("<a id= "+ this.countyId + " href='#'>" + this.countyName +
-    "(" + this.numberOfJobs + ")" +" </a>")
+    " (" + this.numberOfJobs + ")" +" </a>")
     li.appendTo(ul);
     countyLink.appendTo(li);
 
@@ -21,6 +21,6 @@ County.prototype.render = function(){
         $("#occupationsList").empty();
         JobBoard.searchQueries.countyId = that.countyId;
         JobBoard.getOccupations(that.countyId);
-
+        $("#counties").removeClass("panel-warning").addClass("panel panel-success");
     })
 };

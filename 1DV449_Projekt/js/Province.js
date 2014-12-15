@@ -19,6 +19,6 @@ Province.prototype.render = function(){
     provinceLink.click(function(){
         $("#countiesList").empty();
         JobBoard.getCounties(event.target.id);
-
+        $("#provinces").removeClass("panel-warning").addClass("panel panel-success");
     })
 };

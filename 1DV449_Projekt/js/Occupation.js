@@ -10,7 +10,7 @@ function Occupation(occupationId, occupationName){
 Occupation.prototype.render = function(){
     var that = this;
     var ul = $("#occupationsList");
-    var li =$("<li></li>");
+    var li = $("<li></li>");
     var occupationLink = $("<a id= "+ this.occupationId + " href='#'>" + this.occupationName + " </a>");
     li.appendTo(ul);
     occupationLink.appendTo(li);

@@ -11,9 +11,13 @@ var JobBoard = {
     init: function(){
         JobBoard.getProvinces();
 
+        var provincesList =  $("#provincesList");
+
         $("#location-search").click(function(){
+            provincesList.empty();
             JobBoard.getProvinces();
-        })
+        });
+
 
     },
 
@@ -21,14 +25,15 @@ var JobBoard = {
         var that = this;
         $.ajax({
             "type": "POST",
-            "url": "Services/Provinces.php",
+            "url": "WorkService.php",
             "dataType": "json",
+            "data": {"mode": "getProvinces"},
             success: function(data){
-                console.log(that);
-                var provinces = data.soklista.sokdata;
+                console.log(data);
+                var provinces = (data);
                 if(provinces.length > 0){
                     provinces.forEach(function(province){
-                        var newProvince = new Province(province.id, province.namn, province.antal_platsannonser)
+                        var newProvince = new Province(province.id, province.namn, province.antal_platsannonser);
                         that.provinces.push(newProvince);
                         newProvince.render();
                     })
@@ -47,10 +52,11 @@ var JobBoard = {
         var that = this;
         $.ajax({
             "type": "POST",
-            "url": "Services/County.php",
+            "url": "WorkService.php",
             "dataType": "json",
-            "data": {"id": id},
+            "data": {"mode": "getCounties", "provinceId": id},
             success: function(data) {
+                console.log(data);
 
                 var counties = data.soklista.sokdata;
                 if (counties.length > 0) {
@@ -73,14 +79,14 @@ var JobBoard = {
         console.log(countyId);
         $.ajax({
             "type": "POST",
-            "url": "Services/Occupations.php",
+            "url": "WebServices/Occupations.php",
             "dataType": "json",
             "data": countyId,
             success: function(data){
-                var occupations = data.soklista.sokdata;
-                console.log(occupations);
-                if(occupations.length > 0){
-                    occupations.forEach(function(occupation){
+              //  var occupations = data.soklista.sokdata;
+                //console.log(occupations);
+                if(data.length > 0){
+                    data.forEach(function(occupation){
                         var newOccupation = new Occupation(occupation.id, occupation.namn);
                         that.occupations.push(newOccupation);
                         newOccupation.render();
