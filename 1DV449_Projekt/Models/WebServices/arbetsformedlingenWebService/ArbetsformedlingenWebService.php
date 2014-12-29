@@ -6,11 +6,10 @@
  * Time: 09:05
  */
 
-require_once('./vendor/rmccue/requests/library/Requests.php');
+Require_once('../vendor/rmccue/requests/library/Requests.php');
 Requests::register_autoloader();
 
 class ArbetsformedlingenWebService implements IArbetsformedlingWebService {
-
     public function getProvinces()
     {
         $response = Requests::get(
@@ -42,8 +41,33 @@ class ArbetsformedlingenWebService implements IArbetsformedlingWebService {
         return null;
     }
 
-    public function getOccupations($countyId)
+    public function getJobs($countyId, $occupationAreaId)
     {
-        // TODO: Implement getOccupations() method.
+        $response = Requests::get(
+            "http://api.arbetsformedlingen.se/af/v0/platsannonser/matchning?kommunid=$countyId&yrkesomradeid=$occupationAreaId",
+            array(
+                'Accept' => 'application/json',
+                'Accept-Language' => 'sv'
+            )
+        );
+        if ($response->success) {
+            return $response->body;
+        }
+        return null;
+    }
+
+    public function getOccupationAreas()
+    {
+        $response = Requests::get(
+            "http://api.arbetsformedlingen.se/af/v0/platsannonser/soklista/yrkesomraden",
+            array(
+                'Accept' => 'application/json',
+                'Accept-Language' => 'sv'
+            )
+        );
+        if ($response->success) {
+            return $response->body;
+        }
+        return null;
     }
 }

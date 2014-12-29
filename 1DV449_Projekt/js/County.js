@@ -20,7 +20,7 @@ County.prototype.render = function(){
     countyLink.click(function(){
         $("#occupationsList").empty();
         JobBoard.searchQueries.countyId = that.countyId;
-        JobBoard.getOccupations(that.countyId);
+        JobBoard.getOccupationAreas();
         $("#counties").removeClass("panel-warning").addClass("panel panel-success");
     })
 };

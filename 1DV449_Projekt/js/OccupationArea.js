@@ -2,12 +2,12 @@
  * Created by Tobias on 2014-12-12.
  */
 
-function Occupation(occupationId, occupationName){
+function OccupationArea(occupationId, occupationName){
     this.occupationId = occupationId;
     this.occupationName = occupationName;
 }
 
-Occupation.prototype.render = function(){
+OccupationArea.prototype.render = function(){
     var that = this;
     var ul = $("#occupationsList");
     var li = $("<li></li>");
@@ -17,5 +17,6 @@ Occupation.prototype.render = function(){
 
     occupationLink.click(function(){
         JobBoard.searchQueries.occupationId = that.occupationId;
+        JobBoard.getJobs(JobBoard.searchQueries.occupationId, JobBoard.searchQueries.countyId);
     })
 };

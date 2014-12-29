@@ -8,6 +8,9 @@
 
 require_once("h2o-php/h2o.php");
 
+require_once('vendor/rmccue/requests/library/Requests.php');
+
+
 $templateEngine = new h2o('templates/index.html');
 
 echo $templateEngine->render();

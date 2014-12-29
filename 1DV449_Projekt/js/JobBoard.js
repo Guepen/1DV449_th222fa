@@ -4,9 +4,6 @@
 
 var JobBoard = {
     searchQueries: {'countyId': undefined, 'occupationId': undefined},
-    provinces: [],
-    counties: [],
-    occupations: [],
 
     init: function(){
         JobBoard.getProvinces();
@@ -22,10 +19,9 @@ var JobBoard = {
     },
 
     getProvinces: function(){
-        var that = this;
         $.ajax({
             "type": "POST",
-            "url": "WorkService.php",
+            "url": "Controller/WorkController.php",
             "dataType": "json",
             "data": {"mode": "getProvinces"},
             success: function(data){
@@ -33,12 +29,9 @@ var JobBoard = {
                 var provinces = (data);
                 if(provinces.length > 0){
                     provinces.forEach(function(province){
-                        var newProvince = new Province(province.id, province.namn, province.antal_platsannonser);
-                        that.provinces.push(newProvince);
+                        var newProvince = new Province(province.provinceId, province.namn, province.antal_platsannonser);
                         newProvince.render();
                     })
-
-
                 }
             },
 
@@ -49,20 +42,18 @@ var JobBoard = {
     },
 
     getCounties: function(id){
-        var that = this;
         $.ajax({
             "type": "POST",
-            "url": "WorkService.php",
+            "url": "Controller/WorkController.php",
             "dataType": "json",
             "data": {"mode": "getCounties", "provinceId": id},
             success: function(data) {
                 console.log(data);
 
-                var counties = data.soklista.sokdata;
+                var counties = data;
                 if (counties.length > 0) {
                     counties.forEach(function (county) {
-                        var newCounty = new County(county.id, county.namn, county.antal_platsannonser)
-                        that.counties.push(newCounty);
+                        var newCounty = new County(county.countyId, county.namn, county.antal_platsannonser)
                         newCounty.render();
                     })
                 }
@@ -74,23 +65,42 @@ var JobBoard = {
         });
     },
 
-    getOccupations: function(countyId){
-        var that = this;
-        console.log(countyId);
+    getOccupationAreas: function(){
         $.ajax({
             "type": "POST",
-            "url": "WebServices/Occupations.php",
+            "url": "Controller/WorkController.php",
             "dataType": "json",
-            "data": countyId,
+            "data": {"mode": "getOccupationAreas"},
             success: function(data){
-              //  var occupations = data.soklista.sokdata;
-                //console.log(occupations);
                 if(data.length > 0){
-                    data.forEach(function(occupation){
-                        var newOccupation = new Occupation(occupation.id, occupation.namn);
-                        that.occupations.push(newOccupation);
-                        newOccupation.render();
+                    data.forEach(function(occupationArea){
+                        var newOccupationArea = new OccupationArea(occupationArea.id, occupationArea.namn);
+                        newOccupationArea.render();
+                    })
+                }
+            },
 
+            error: function(xhr, text){
+                alert(text);
+            }
+        });
+    },
+
+    getJobs: function(occupationAreaId, countyId){
+        $.ajax({
+            "type": "POST",
+            "url": "Controller/WorkController.php",
+            "dataType": "json",
+            "data": {"mode": "getJobs", "countyId": countyId, "occupationAreaId": occupationAreaId},
+            success: function(data){
+                if(data.length > 0){
+                    $("#content").empty();
+                    $("<div class='col-md-12' id='jobContent'></div>").appendTo("#content");
+                    data.forEach(function(job){
+                        var newJob = new Job(job.annonsrubrik, job.yrkesbenamning, job.arbetsplatsnamn, job.kommunnamn,
+                                             job.publiceraddatum, job.antalplatser);
+
+                        newJob.render();
                     })
                 }
             },

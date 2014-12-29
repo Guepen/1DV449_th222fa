@@ -12,12 +12,34 @@
 <div class="container container-fluid">
 
     {% block nav %}
+    <div class="row">
+        <div class="col-md-12">
+            <nav class="navbar navbar-inverse" role="navigation">
+                <div class="navbar-header">
+                    <p class="navbar-brand">Sök Jobb</p>
+                </div>
+                <div>
+                    <button id="location-search" class="btn btn-success navbar-btn">Via ort</button>
+                    <button id="occupation-search" class="btn btn-success navbar-btn">Via yrke</button>
+                    <button id="text-search" class="btn btn-success navbar-btn">Fritext</button>
+                </div>
+            </nav>
+        </div>
+    </div>
     {% endblock %}
+    <div class="row">
+        <div class="col-md-12">
+            <div class="page-header">
+                <h2>Jobsök <small>Vi hjälper dig hitta ditt nya jobb!</small></h2>
+            </div>
+        </div>
+    </div>
     {% block content %}
     {% endblock %}
 </div>
 <script src="js/Province.js"></script>
-<script src="js/Occupation.js"></script>
+<script src="js/OccupationArea.js"></script>
+<script src="js/Job.js"></script>
 <script src="js/County.js"></script>
 <script src="js/JobBoard.js"></script>
 <script src='//code.jquery.com/jquery-1.11.0.min.js'></script>

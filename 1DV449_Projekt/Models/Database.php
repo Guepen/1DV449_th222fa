@@ -5,7 +5,7 @@
  * Date: 2014-12-15
  * Time: 09:59
  */
-require_once('./Settings.php');
+require_once('../Settings.php');
 
 abstract class Database {
     protected $dbConnection;

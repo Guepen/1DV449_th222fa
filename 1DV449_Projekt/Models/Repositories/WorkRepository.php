@@ -6,8 +6,8 @@
  * Time: 10:28
  */
 
-require_once('./Models/Database.php');
-require_once('./Repositories/IWorkRepository.php');
+require_once('../Models/Database.php');
+require_once('IWorkRepository.php');
 
 /**
  * Class WorkRepository
@@ -44,14 +44,23 @@ class WorkRepository extends Database implements IWorkRepository  {
 
             $result = $query->fetchAll();
             if ($result) {
-                if($result[0]['time'] + strtotime("+5 minutes") > time()){
+                $time = new DateTime();
+                $time = $time->getTimestamp();
+                $latestUpdate = $result[0]['nextUpdate'];
+                //$latestUpdate =  strtotime("+ 5 minutes", $latestUpdate);
+                //var_dump($result[0]['time'] + strtotime("+5 minutes"));
+               // var_dump(time());
+                if($time < $latestUpdate ){
+                    //var_dump("cache");
                     return $result;
                 }
+               // var_dump("new");
              return null;
             }
 
         } catch(Exception $ex){
-            var_dump($ex->getMessage());
+            return null;
+           // var_dump($ex->getMessage());
         }
        return null;
     }
