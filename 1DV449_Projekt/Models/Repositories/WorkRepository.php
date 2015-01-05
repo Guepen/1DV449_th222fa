@@ -68,13 +68,11 @@ class WorkRepository extends Database implements IWorkRepository  {
                 $time = new DateTime();
                 $time = $time->getTimestamp();
                 $latestUpdate = $result[0]['nextUpdate'];
-                //$latestUpdate =  strtotime("+ 5 minutes", $latestUpdate);
-                //var_dump($result[0]['time'] + strtotime("+5 minutes"));
-               // var_dump(time());
                 if($time < $latestUpdate ){
                     //var_dump("cache");
                     return $result;
                 }
+                $this->remove($table);
                // var_dump("new");
              return null;
             }

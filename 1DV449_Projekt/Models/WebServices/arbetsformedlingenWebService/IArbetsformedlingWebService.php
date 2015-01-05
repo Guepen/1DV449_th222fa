@@ -12,5 +12,6 @@ interface IArbetsformedlingWebService {
     public function getCounties($provinceId);
     public function getOccupationAreas();
     public function getJobs($countyId, $occupationAreaId);
+    public function getJob($jobAdId);
 
 } 

@@ -70,4 +70,20 @@ class ArbetsformedlingenWebService implements IArbetsformedlingWebService {
         }
         return null;
     }
+
+    public function getJob($jobAdId)
+    {
+
+        $response = Requests::get(
+            "http://api.arbetsformedlingen.se/af/v0/platsannonser/$jobAdId",
+            array(
+                'Accept' => 'application/json',
+                'Accept-Language' => 'sv'
+            )
+        );
+        if ($response->success) {
+            return $response->body;
+        }
+        return null;
+    }
 }

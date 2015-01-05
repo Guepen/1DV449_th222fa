@@ -33,6 +33,8 @@ class WorkController {
             case 'getJobs':
                 echo json_encode($this->workService->getJobs($this->fetch('countyId'), $this->fetch('occupationAreaId')));
                 break;
+            case 'getJob':
+                echo json_encode($this->workService->getJob($this->fetch('jobAdId')));
         }
     }
 

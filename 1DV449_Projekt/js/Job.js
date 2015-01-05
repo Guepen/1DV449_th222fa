@@ -18,6 +18,6 @@ Job.prototype.render = function(){
     var jobLink = $("<a id='"+ this.jobId +"' href='#'>" + this.jobName + "</a>").appendTo(body);
 
     jobLink.click(function(){
-        alert(event.target.id);
+        JobBoard.getJob(event.target.id);
     })
 };

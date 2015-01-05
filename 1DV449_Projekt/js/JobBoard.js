@@ -11,7 +11,9 @@ var JobBoard = {
         var content =  $("#content");
 
         $("#location-search").click(function(){
-            content.empty();
+            $('#provincesList').empty();
+            $('#countiesList').empty();
+            $('#occupationsList').empty();
             JobBoard.getProvinces();
         });
 
@@ -117,12 +119,13 @@ var JobBoard = {
             "dataType": "json",
             "data": {"mode": "getJob", "jobAdId": jobAdId},
             success: function(data){
-                if(data.length > 0){
-                    data.forEach(function(job){
-                        var newJob = new Job(job.annonsid, job.annonsrubrik, job.yrkesbenamning);
+                console.log(data);
+                if(data){
+                   var jobAd = new JobAd(data.annonsrubrik, data.annonstext, data.publiceraddatum, data.antal_platser,
+                       data.kommunnamn, data.arbetstidvaraktighet, data.arbetstid, data.lonetyp, data.yrkesbenamning,
+                       data.webbplats);
 
-                        newJob.render();
-                    })
+                    jobAd.render();
                 }
             },
 
