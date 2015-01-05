@@ -8,10 +8,10 @@ var JobBoard = {
     init: function(){
         JobBoard.getProvinces();
 
-        var provincesList =  $("#provincesList");
+        var content =  $("#content");
 
         $("#location-search").click(function(){
-            provincesList.empty();
+            content.empty();
             JobBoard.getProvinces();
         });
 
@@ -74,7 +74,7 @@ var JobBoard = {
             success: function(data){
                 if(data.length > 0){
                     data.forEach(function(occupationArea){
-                        var newOccupationArea = new OccupationArea(occupationArea.id, occupationArea.namn);
+                        var newOccupationArea = new OccupationArea(occupationArea.occupationAreaId, occupationArea.namn);
                         newOccupationArea.render();
                     })
                 }
@@ -87,6 +87,7 @@ var JobBoard = {
     },
 
     getJobs: function(occupationAreaId, countyId){
+        $("#content").empty();
         $.ajax({
             "type": "POST",
             "url": "Controller/WorkController.php",
@@ -94,11 +95,31 @@ var JobBoard = {
             "data": {"mode": "getJobs", "countyId": countyId, "occupationAreaId": occupationAreaId},
             success: function(data){
                 if(data.length > 0){
-                    $("#content").empty();
-                    $("<div class='col-md-12' id='jobContent'></div>").appendTo("#content");
                     data.forEach(function(job){
-                        var newJob = new Job(job.annonsrubrik, job.yrkesbenamning, job.arbetsplatsnamn, job.kommunnamn,
-                                             job.publiceraddatum, job.antalplatser);
+                        var newJob = new Job(job.annonsid, job.annonsrubrik, job.yrkesbenamning);
+
+                        newJob.render();
+                    })
+                }
+            },
+
+            error: function(xhr, text){
+                alert(text);
+            }
+        });
+    },
+
+    getJob: function(jobAdId){
+        $("#content").empty();
+        $.ajax({
+            "type": "POST",
+            "url": "Controller/WorkController.php",
+            "dataType": "json",
+            "data": {"mode": "getJob", "jobAdId": jobAdId},
+            success: function(data){
+                if(data.length > 0){
+                    data.forEach(function(job){
+                        var newJob = new Job(job.annonsid, job.annonsrubrik, job.yrkesbenamning);
 
                         newJob.render();
                     })

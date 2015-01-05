@@ -2,17 +2,22 @@
  * Created by Tobias on 2014-12-29.
  */
 
-function Job(header, jobName, companyName, countyName, date, numberOfJobs){
+function Job(jobbId, header, jobName){
 
+    this.jobId = jobbId;
     this.header = header;
     this.jobName = jobName;
-    this.companyName = companyName;
-    this.countyName = countyName;
-    this.date = date;
-    this.numberOfJobs = numberOfJobs;
 }
 
 Job.prototype.render = function(){
-    $("<div class='panel panel-success'><div class='panel-heading'><h4>" + this.header + "</h4></div> " +
-                "<div class='panel-body'>" + this.jobName + "</div>").appendTo("#jobContent");
+    var panel = $("<div class='panel panel-success'></div>").appendTo("#content");
+    $("<div class='panel-heading'><h5>" + this.header + "</h5></div> ").appendTo(panel);
+
+    var body = $("<div class='panel-body'></div>").appendTo(panel);
+
+    var jobLink = $("<a id='"+ this.jobId +"' href='#'>" + this.jobName + "</a>").appendTo(body);
+
+    jobLink.click(function(){
+        alert(event.target.id);
+    })
 };

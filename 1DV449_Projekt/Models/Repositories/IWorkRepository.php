@@ -8,6 +8,7 @@
 
 interface IWorkRepository {
     public function find($table, $tableId, $id);
+    public function findJobs($countyId, $occupationAreaId);
     public function add($table, array $columns, array $values);
     public function remove($table);
 } 

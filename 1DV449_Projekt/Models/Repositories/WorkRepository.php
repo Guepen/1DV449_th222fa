@@ -20,6 +20,27 @@ class WorkRepository extends Database implements IWorkRepository  {
         $this->db = $this->connection();
     }
 
+    public function findJobs($countyId, $occupationAreaId){
+        try{
+            $sql = "SELECT * FROM jobs WHERE countyId =? AND occupationAreaId=?";
+            $params = array($countyId, $occupationAreaId);
+            $query = $this->db->prepare($sql);
+            $query->execute($params);
+            $result = $query->fetchAll();
+
+            if($result){
+                $latestUpdate = $result[0]['nextUpdate'];
+                if(time() < $latestUpdate ){
+                    return $result;
+                }
+            }
+
+        } catch(Exception $ex){
+            var_dump( $ex->getMessage());
+        }
+        return null;
+    }
+
     /**
      * @param $table string the name of the table to fetch data from
      * @param $idColumn null|int example: to fetch data from the county table we need to pass in the id

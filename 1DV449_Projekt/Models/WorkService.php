@@ -88,15 +88,16 @@ class WorkService {
     }
 
     public function getJobs($countyId, $occupationAreaId){
-        $jobs = $this->repository->find("jobs", null, null);
+        $jobs = $this->repository->findJobs($countyId, $occupationAreaId);
         if($jobs == null){
+            //todo: check if there is any jobs
             $jobs = $this->workService->getJobs($countyId, $occupationAreaId);
             $jobs = json_decode($jobs, true);
             foreach($jobs['matchningslista']['matchningdata'] as $key => $job){
                 $this->repository->add('jobs', array('countyId', 'occupationAreaId', 'annonsrubrik', 'yrkesbenamning',
-                        'arbetsplatsnamn', 'kommunnamn', 'publiceraddatum', 'antalplatser', 'nextUpdate'),
-                    array($countyId, $occupationAreaId,$job['annonsrubrik'], $job['yrkesbenamning'], $job['arbetsplatsnamn'],
-                        $job['kommunnamn'], $job['publiceraddatum'], $job['antalplatser'], time() + strtotime("+5 minutes")));
+                        'annonsid', 'nextUpdate'),
+                    array($countyId, $occupationAreaId,$job['annonsrubrik'], $job['yrkesbenamning'], $job['annonsid']
+                    , time() + strtotime("+5 minutes")));
             }
             return $this->sendResponse($jobs['matchningslista']['matchningdata']);
         } else {

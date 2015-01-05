@@ -16,6 +16,7 @@ class WorkController {
     private $workService;
 
     public function __construct(){
+
         $this->workService = new WorkService(new WorkRepository(), new ArbetsformedlingenWebService());
         $mode = $this->fetch('mode');
         switch($mode){
@@ -26,6 +27,7 @@ class WorkController {
                echo json_encode($this->workService->getCounties($this->fetch('provinceId')));
                 break;
             case 'getOccupationAreas':
+
                 echo json_encode($this->workService->getOccupationAreas());
                 break;
             case 'getJobs':
