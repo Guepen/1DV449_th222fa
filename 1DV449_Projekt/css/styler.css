@@ -1,0 +1,8 @@
+.text{
+    font-size: 12px !important;
+    white-space: pre-wrap;
+}
+
+#provincesList, #countiesList, #occupationsList{
+    list-style-type: none;
+}

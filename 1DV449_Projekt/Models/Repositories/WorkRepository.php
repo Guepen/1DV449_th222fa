@@ -93,18 +93,18 @@ class WorkRepository extends Database implements IWorkRepository  {
     {
         $numberOfParams = "?";
         for($i = 1; $i < count($values); $i++){
-           $numberOfParams .= ",?";
+           $numberOfParams .= " ,?";
         }
 
        try{
-           $fields = implode(',', $columns);
+           $fields = implode(', ', $columns);
            $sql = "INSERT INTO ". $table . "(". $fields .")". " VALUES (". $numberOfParams.")";
            $params = $values;
            $query = $this->db->prepare($sql);
            $query->execute($params);
 
        } catch(Exception $ex){
-          // var_dump($ex->getMessage());
+           var_dump($ex->getMessage());
        }
     }
 

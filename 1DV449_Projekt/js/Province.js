@@ -9,6 +9,8 @@ function Province(provinceId, provinceName, numberOfJobs){
 }
 
 Province.prototype.render = function(){
+
+
     var ul = $("#provincesList");
     var li = $("<li></li>");
     var provinceLink = $("<a id=" + this.provinceId +"  href='#'>" + this.provinceName +
@@ -17,7 +19,9 @@ Province.prototype.render = function(){
     provinceLink.appendTo(li);
 
     provinceLink.click(function(){
+        $("#occupationsList").empty();
         $("#countiesList").empty();
+        $("#counties").addClass("panel panel-warning");
         JobBoard.getCounties(event.target.id);
         $("#provinces").removeClass("panel-warning").addClass("panel panel-success");
     })

@@ -9,6 +9,7 @@
 require_once("../Models/WorkService.php");
 require_once("../Models/Repositories/WorkRepository.php");
 require_once("../Models/WebServices/arbetsformedlingenWebService/ArbetsformedlingenWebService.php");
+require_once("../h2o-php/h2o.php");
 
 new WorkController();
 
@@ -20,6 +21,10 @@ class WorkController {
         $this->workService = new WorkService(new WorkRepository(), new ArbetsformedlingenWebService());
         $mode = $this->fetch('mode');
         switch($mode){
+            case 'start':
+                $templateEngine = new h2o('templates/index.html');
+                echo $templateEngine->render();
+                break;
             case 'getProvinces':
               echo json_encode($this->workService->getProvinces());
                 break;

@@ -12,8 +12,6 @@ require_once('Repositories/WorkRepository.php');
 require_once('WebServices/arbetsformedlingenWebService/ArbetsformedlingenWebService.php');
 require_once('Job.php');
 
-//new WorkService(new WorkRepository(), new ArbetsformedlingenWebService());
-
 /**
  * Class WorkService
  */
@@ -98,7 +96,7 @@ class WorkService {
                 $this->repository->add('jobs', array('countyId', 'occupationAreaId', 'annonsrubrik', 'yrkesbenamning',
                         'annonsid', 'nextUpdate'),
                     array($countyId, $occupationAreaId,$job['annonsrubrik'], $job['yrkesbenamning'], $job['annonsid']
-                    , time() + strtotime("+5 minutes")));
+                    , time() + strtotime("+1 hour")));
             }
             return $this->sendResponse($jobs['matchningslista']['matchningdata']);
         } else {
@@ -112,19 +110,26 @@ class WorkService {
             $job = ($this->workService->getJob($jobAdId));
             $job = json_decode($job, true);
 
+            if(isset($job['platsannons']['ansokan']['webbplats']) == false){
+                $website = "saknas";
+            } else {
+                $website = $job['platsannons']['ansokan']['webbplats'];
+            }
+
             $job = new Job($job['platsannons']['annons']['annonsrubrik'], $job['platsannons']['annons']['annonstext'],
                 $job['platsannons']['annons']['publiceraddatum'], $job['platsannons']['annons']['antal_platser'],
-                $job['platsannons']['annons']['kommunnamn'], $job['platsannons']['villkor']['arbetstidvaraktighet'],
-                $job['platsannons']['villkor']['arbetstid'], $job['platsannons']['villkor']['lonetyp'],
-                $job['platsannons']['annons']['yrkesbenamning'], $job['platsannons']['ansokan']['webbplats'],
-                $job['platsannons']['annons']['annonsid']);
+                $job['platsannons']['annons']['kommunnamn'],  $job['platsannons']['arbetsplats']['arbetsplatsnamn'],
+                $job['platsannons']['villkor']['arbetstidvaraktighet'], $job['platsannons']['villkor']['arbetstid'],
+                $job['platsannons']['villkor']['lonetyp'], $job['platsannons']['annons']['yrkesbenamning'],
+                $website, $job['platsannons']['annons']['annonsid']);
 
             $this->repository->add('jobads', array('annonsrubrik', 'annonstext', 'publiceraddatum', 'antal_platser', 'kommunnamn',
-                    'arbetstidvaraktighet', 'arbetstid', 'lonetyp', 'yrkesbenamning', 'webbplats', 'annonsid', 'nextUpdate'),
+                    'arbetsplatsnamn','arbetstidvaraktighet', 'arbetstid', 'lonetyp', 'yrkesbenamning', 'webbplats', 'annonsid',
+                    'nextUpdate'),
 
                 array($job->getAnnonsrubrik(), $job->getAnnonstext(), $job->getPubliceraddatum(), $job->getAntalPlatser(),
-                    $job->getKommunnamn(), $job->getArbetstidvaraktighet(), $job->getArbetstid(), $job->getLonetyp(),
-                    $job->getYrkesbenamning(), $job->getWebbplats(), $job->getAnnonsid()));
+                    $job->getKommunnamn(), $job->getArbetsplatsnamn(), $job->getArbetstidvaraktighet(), $job->getArbetstid(),
+                    $job->getLonetyp(), $job->getYrkesbenamning(), $job->getWebbplats(), $job->getAnnonsid(), time() + strtotime("+1 hour")));
 
             return array(
                 'annonsrubrik' => $job->getAnnonsrubrik(),
@@ -132,6 +137,7 @@ class WorkService {
                 'publiceraddatum' => $job->getPubliceraddatum(),
                 'antal_platser' => $job->getAntalPlatser(),
                 'kommunnamn' => $job->getKommunnamn(),
+                'arbetsplatsnamn' => $job->getArbetsplatsnamn(),
                 'arbetstidvaraktighet' => $job->getArbetstidvaraktighet(),
                 'arbetstid' => $job->getArbetstid(),
                 'lonetyp' => $job->getLonetyp(),
@@ -148,6 +154,7 @@ class WorkService {
                 'publiceraddatum' => $job[0]['publiceraddatum'],
                 'antal_platser' => $job[0]['antal_platser'],
                 'kommunnamn' => $job[0]['kommunnamn'],
+                'arbetsplatsnamn' => $job[0]['arbetsplatsnamn'],
                 'arbetstidvaraktighet' => $job[0]['arbetstidvaraktighet'],
                 'arbetstid' => $job[0]['arbetstid'],
                 'lonetyp' => $job[0]['lonetyp'],
@@ -156,6 +163,7 @@ class WorkService {
                 'annonsid' => $job[0]['annonsid']
             );
     }
+
 
     /**
      * @param $response
