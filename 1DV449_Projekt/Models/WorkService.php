@@ -127,18 +127,19 @@ class WorkService {
                 $job['platsannons']['villkor']['lonetyp'], $job['platsannons']['annons']['yrkesbenamning'],
                 $website, $job['platsannons']['annons']['annonsid']);
 
-            $companyInformation = json_decode($this->eniroWorkService->getCompanyInformation($job->getArbetsplatsnamn(), $job->getKommunnamn()), true);
-            $totalHits = $companyInformation['totalHits'];
-           // $facebook = $companyInformation['adverts']['facebook'];
+            //todo: companyInformation should be an own function and table
+            $companyInformation = json_decode($this->eniroWorkService->getCompanyInformation($job->getArbetsplatsnamn(),
+                $job->getKommunnamn()), true);
+
             if(isset($companyInformation['adverts'][0]['facebook'])){
                 $facebook = $companyInformation['adverts'][0]['facebook'];
             } else{
                 $facebook = 'saknas';
             }
 
-            $streetName = $companyInformation['adverts'][0]['address']['streetName'];
-            $postCode = $companyInformation['adverts'][0]['address']['postCode'];
-            $postArea = $companyInformation['adverts'][0]['address']['postArea'];
+            $streetName = $this->checkValue($companyInformation['adverts'], 'streetName');
+            $postCode = $this->checkValue($companyInformation['adverts'], 'postCode');
+            $postArea = $this->checkValue($companyInformation['adverts'], 'postArea');
 
             $this->repository->add('jobads', array('annonsrubrik', 'annonstext', 'publiceraddatum', 'antal_platser', 'kommunnamn',
                     'arbetsplatsnamn','arbetstidvaraktighet', 'arbetstid', 'lonetyp', 'yrkesbenamning', 'webbplats', 'annonsid',
@@ -190,6 +191,12 @@ class WorkService {
             );
     }
 
+    private function checkValue($value, $propertyName){
+        if(isset($value[0]['address'][$propertyName])){
+            return $value;
+        }
+        return 'saknas';
+    }
 
     /**
      * @param $response
