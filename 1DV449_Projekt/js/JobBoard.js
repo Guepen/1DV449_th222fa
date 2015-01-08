@@ -13,6 +13,7 @@ var JobBoard = {
 
     renderSearchView: function(){
         $("#content").empty();
+
         //provinces
         $("<div class='col-md-4'><div id='provinces' class='panel panel-warning'></div></div>").appendTo("#content");
         $("<div class='panel-heading'><h4 class='center'></h4>Steg 1. Välj Län</div>").appendTo("#provinces");
@@ -56,7 +57,8 @@ var JobBoard = {
             },
 
             error: function(xhr, text){
-                alert(text);
+                var error = new CustomError("För tillfället kan inte några län hämtas", "Vänligen, försök igen senare" );
+                error.render();
             }
         });
     },
@@ -81,7 +83,8 @@ var JobBoard = {
             },
 
             error: function(xhr, text){
-                alert(text);
+                var error = new CustomError("För tillfället kan inte kommuner i valt län hämtas", "Vänligen, försök igen senare" );
+                error.render();
             }
         });
     },
@@ -103,7 +106,8 @@ var JobBoard = {
             },
 
             error: function(xhr, text){
-                alert(text);
+                var error = new CustomError("För tillfället kan inte yrkesområden hämtas", "Vänligen, försök igen senare" );
+                error.render();
             }
         });
     },
@@ -131,7 +135,8 @@ var JobBoard = {
             },
 
             error: function(xhr, text){
-                alert(text);
+                var error = new CustomError("Ett fel inträffade när listan på matchande jobb skulle hämtas", "Vänligen, försök igen" );
+                error.render();
             }
         });
     },
@@ -165,8 +170,9 @@ var JobBoard = {
                 }
             },
 
-            error: function(xhr, text){
-                alert(text);
+            error: function(){
+                var error = new CustomError("Ett fel inträffade när valt jobb skulle hämtas", "Vänligen, försök igen" );
+                error.render();
             }
         });
     }
