@@ -1,22 +1,28 @@
 /**
  * Created by Tobias on 2015-01-05.
  */
-function JobAd(header, jobText, published, numberOfJobs, countyName, workLocatonName, duration, workHours, salaryType, jobName, website){
+function JobAd(header, jobText, published, numberOfJobs, countyName, workLocationName, duration, workHours, salaryType,
+               jobName, website, facebook, streetName, postCode, postArea){
     this.header = header;
     this.jobText = jobText;
     this.published = published;
     this.numberOfJobs = numberOfJobs;
     this.coutyName = countyName;
-    this.workLocationName = workLocatonName;
+    this.workLocationName = workLocationName;
     this.duration = duration;
     this.workHours = workHours;
     this.salaryType = salaryType;
     this.jobName = jobName;
     this.website = website;
+    this.facebook = facebook;
+    this.streetName = streetName;
+    this.postCode = postCode;
+    this.postArea = postArea;
 }
 
 JobAd.prototype.render = function(){
     var website;
+    var facebook;
 
     var backLink = $("<a href='#'>Tillbaka till sökresultatet</a>").appendTo("#content");
     backLink.click(function(){
@@ -44,8 +50,16 @@ JobAd.prototype.render = function(){
         website = "<a target='_blank' href="+ this.website +"> Hemsida </a></div>";
     }
 
+    if(this.facebook === 'saknas') {
+        facebook = "<p class='text'>facebook saknas</p>"
+    } else{
+        facebook = "<a target='_blank' href="+ this.facebook +"> Facebook </a>";
+    }
+
 
     $("<div class='col-md-5 pull-right'><p class='text'><b>Arbetsgivare: </b>" + this.workLocationName + "</p>"+
-        website).appendTo(footer);
+        "<p class='text'><b>Adress: </b></p><p class='text'>"+ this.streetName +"</p><p class='text'>"+ this.postCode +
+    "</p><p class='text'>"+ this.postArea +"</p>"+
+        facebook + website).appendTo(footer);
 
 };

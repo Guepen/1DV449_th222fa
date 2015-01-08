@@ -10,6 +10,7 @@ require_once('Repositories/IWorkRepository.php');
 require_once('WebServices/arbetsformedlingenWebService/IArbetsformedlingWebService.php');
 require_once('Repositories/WorkRepository.php');
 require_once('WebServices/arbetsformedlingenWebService/ArbetsformedlingenWebService.php');
+require_once('WebServices/IEniroWebService.php');
 require_once('Job.php');
 
 /**
@@ -18,10 +19,13 @@ require_once('Job.php');
 class WorkService {
     private $repository;
     private $workService;
+    private $eniroWorkService;
 
-    public function __construct(IWorkRepository $repository, IArbetsformedlingWebService $workWebService){
+    public function __construct(IWorkRepository $repository, IArbetsformedlingWebService $workWebService,
+                                IEniroWebService $enrioWorkService){
         $this->repository = $repository;
         $this->workService = $workWebService;
+        $this->eniroWorkService = $enrioWorkService;
     }
 
     /**
@@ -123,13 +127,27 @@ class WorkService {
                 $job['platsannons']['villkor']['lonetyp'], $job['platsannons']['annons']['yrkesbenamning'],
                 $website, $job['platsannons']['annons']['annonsid']);
 
+            $companyInformation = json_decode($this->eniroWorkService->getCompanyInformation($job->getArbetsplatsnamn(), $job->getKommunnamn()), true);
+            $totalHits = $companyInformation['totalHits'];
+           // $facebook = $companyInformation['adverts']['facebook'];
+            if(isset($companyInformation['adverts'][0]['facebook'])){
+                $facebook = $companyInformation['adverts'][0]['facebook'];
+            } else{
+                $facebook = 'saknas';
+            }
+
+            $streetName = $companyInformation['adverts'][0]['address']['streetName'];
+            $postCode = $companyInformation['adverts'][0]['address']['postCode'];
+            $postArea = $companyInformation['adverts'][0]['address']['postArea'];
+
             $this->repository->add('jobads', array('annonsrubrik', 'annonstext', 'publiceraddatum', 'antal_platser', 'kommunnamn',
                     'arbetsplatsnamn','arbetstidvaraktighet', 'arbetstid', 'lonetyp', 'yrkesbenamning', 'webbplats', 'annonsid',
-                    'nextUpdate'),
+                    'nextUpdate', 'facebook', 'streetName', 'postCode', 'postArea'),
 
                 array($job->getAnnonsrubrik(), $job->getAnnonstext(), $job->getPubliceraddatum(), $job->getAntalPlatser(),
                     $job->getKommunnamn(), $job->getArbetsplatsnamn(), $job->getArbetstidvaraktighet(), $job->getArbetstid(),
-                    $job->getLonetyp(), $job->getYrkesbenamning(), $job->getWebbplats(), $job->getAnnonsid(), time() + strtotime("+1 hour")));
+                    $job->getLonetyp(), $job->getYrkesbenamning(), $job->getWebbplats(), $job->getAnnonsid(),
+                    time() + strtotime("+1 hour"), $facebook, $streetName, $postCode, $postArea));
 
             return array(
                 'annonsrubrik' => $job->getAnnonsrubrik(),
@@ -143,7 +161,11 @@ class WorkService {
                 'lonetyp' => $job->getLonetyp(),
                 'yrkesbenamning' => $job->getYrkesbenamning(),
                 'webbplats' => $job->getWebbplats(),
-                'annonsid' => $job->getAnnonsid()
+                'annonsid' => $job->getAnnonsid(),
+                'facebook' => $facebook,
+                'streetName' => $streetName,
+                'postCode' => $postCode,
+                'postArea' => $postArea
             );
 
         }
@@ -160,7 +182,11 @@ class WorkService {
                 'lonetyp' => $job[0]['lonetyp'],
                 'yrkesbenamning' => $job[0]['yrkesbenamning'],
                 'webbplats' => $job[0]['webbplats'],
-                'annonsid' => $job[0]['annonsid']
+                'annonsid' => $job[0]['annonsid'],
+                'facebook' => $job[0]['facebook'],
+                'streetName' => $job[0]['streetName'],
+                'postCode' => $job[0]['postCode'],
+                'postArea' => $job[0]['postArea']
             );
     }
 

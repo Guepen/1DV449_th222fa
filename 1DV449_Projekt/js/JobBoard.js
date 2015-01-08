@@ -159,7 +159,7 @@ var JobBoard = {
                 if(data){
                    var jobAd = new JobAd(data.annonsrubrik, data.annonstext, data.publiceraddatum, data.antal_platser,
                        data.kommunnamn, data.arbetsplatsnamn, data.arbetstidvaraktighet, data.arbetstid, data.lonetyp, data.yrkesbenamning,
-                       data.webbplats);
+                       data.webbplats, data.facebook, data.streetName, data.postCode, data.postArea);
 
                     jobAd.render();
                 }

@@ -9,6 +9,7 @@
 require_once("../Models/WorkService.php");
 require_once("../Models/Repositories/WorkRepository.php");
 require_once("../Models/WebServices/arbetsformedlingenWebService/ArbetsformedlingenWebService.php");
+require_once("../Models/WebServices/EniroWebService.php");
 require_once("../h2o-php/h2o.php");
 
 new WorkController();
@@ -18,7 +19,7 @@ class WorkController {
 
     public function __construct(){
 
-        $this->workService = new WorkService(new WorkRepository(), new ArbetsformedlingenWebService());
+        $this->workService = new WorkService(new WorkRepository(), new ArbetsformedlingenWebService(), new EniroWebService());
         $mode = $this->fetch('mode');
         switch($mode){
             case 'start':

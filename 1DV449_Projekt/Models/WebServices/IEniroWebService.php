@@ -6,7 +6,7 @@
  * Time: 11:57
  */
 
-interface IEnrioWebService {
+interface IEniroWebService {
     public function getCompanyInformation($searchWord, $county);
 
 } 

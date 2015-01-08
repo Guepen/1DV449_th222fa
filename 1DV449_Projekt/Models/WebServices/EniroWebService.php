@@ -8,7 +8,7 @@
 
 require_once("IEniroWebService.php");
 
-class EniroWebService implements IEnrioWebService {
+class EniroWebService implements IEniroWebService {
 
     public function getCompanyInformation($searchWord, $county)
     {
