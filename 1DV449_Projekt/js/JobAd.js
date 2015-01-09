@@ -5,7 +5,7 @@ function JobAd(header, jobText, published, numberOfJobs, countyName, workLocatio
                jobName, website, facebook, streetName, postCode, postArea){
     this.header = header;
     this.jobText = jobText;
-    this.published = published;
+    this.published = new Date(published);
     this.numberOfJobs = numberOfJobs;
     this.coutyName = countyName;
     this.workLocationName = workLocationName;
@@ -30,7 +30,7 @@ JobAd.prototype.render = function(){
     });
 
     var panel = $("<div class='panel panel-success'></div>").appendTo("#content");
-    $("<div class='panel-heading'><h3>" + this.header +" <small class='pull-right'>publicerad: " + new Date(this.published)
+    $("<div class='panel-heading'><h3>" + this.header +" <small class='pull-right'>publicerad: " + this.getPublishedDate()
     + "</small></h3> </div> ").appendTo(panel);
 
     var body = $("<div class='panel-body'><p>" + this.jobName + " "+ this.coutyName +"</p></div>").appendTo(panel);
@@ -62,9 +62,16 @@ JobAd.prototype.renderFacebook = function(){
     var status = $("#status").text();
     switch (status){
         case 'Inloggad':
-            return "<a target='_blank' href="+ this.facebook +"> Arbetsgivarens facebook </a>";
+            if (this.facebook === 'saknas') {
+                return "<p><b>Arbetsgivaren verkar sakna facebook</b></p>";
+            }
+            return "<a target='_blank' href=" + this.facebook + "> Arbetsgivarens facebook </a>";
         default:
             return "<p class='text'>Var vänlig att logga in med facebook för att se arbetsgivarens facebook</p>";
     }
 
+};
+
+JobAd.prototype.getPublishedDate = function(){
+  return this.published.getFullYear() + "-" + this.published.getMonth() + 1 + "-" + this.published.getDate();
 };
