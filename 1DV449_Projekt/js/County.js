@@ -2,18 +2,16 @@
  * Created by Tobias on 2014-12-12.
  */
 
-function County(countyId, countyName, numberOfJobs){
+function County(countyId, countyName){
     this.countyId = countyId;
     this.countyName = countyName;
-    this.numberOfJobs = numberOfJobs;
 }
 
 County.prototype.render = function(){
     var that = this;
     var ul = $("#countiesList");
     var li = $("<li></li>");
-    var countyLink = $("<a id= "+ this.countyId + " href='#'>" + this.countyName +
-    " (" + this.numberOfJobs + ")" +" </a>")
+    var countyLink = $("<a id= "+ this.countyId + " href='#'>" + this.countyName + " </a>");
     li.appendTo(ul);
     countyLink.appendTo(li);
 

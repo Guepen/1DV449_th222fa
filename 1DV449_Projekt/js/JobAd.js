@@ -47,19 +47,24 @@ JobAd.prototype.render = function(){
     if(this.website === 'saknas'){
        website = "<p class='text'>Hemsida saknas</p>";
     } else{
-        website = "<a target='_blank' href="+ this.website +"> Hemsida </a></div>";
-    }
-
-    if(this.facebook === 'saknas') {
-        facebook = "<p class='text'>facebook saknas</p>"
-    } else{
-        facebook = "<a target='_blank' href="+ this.facebook +"> Facebook </a>";
+        website = "<a target='_blank' href="+ this.website +"> Läs mer/Ansök </a></div>";
     }
 
 
     $("<div class='col-md-5 pull-right'><p class='text'><b>Arbetsgivare: </b>" + this.workLocationName + "</p>"+
         "<p class='text'><b>Adress: </b></p><p class='text'>"+ this.streetName +"</p><p class='text'>"+ this.postCode +
     "</p><p class='text'>"+ this.postArea +"</p>"+
-        facebook + website).appendTo(footer);
+        this.renderFacebook() + website).appendTo(footer);
+
+};
+
+JobAd.prototype.renderFacebook = function(){
+    var status = $("#status").text();
+    switch (status){
+        case 'Inloggad':
+            return "<a target='_blank' href="+ this.facebook +"> Arbetsgivarens facebook </a>";
+        default:
+            return "<p class='text'>Var vänlig att logga in med facebook för att se arbetsgivarens facebook</p>";
+    }
 
 };

@@ -38,12 +38,19 @@ class Job{
 
     }
 
+    private function checkValue($value){
+        if(isset($value)){
+            return $value;
+        }
+        return 'saknas';
+    }
+
     /**
      * @return mixed
      */
     public function getArbetsplatsnamn()
     {
-        return $this->arbetsplatsnamn;
+        return $this->checkValue($this->arbetsplatsnamn);
     }
 
     /**
@@ -51,7 +58,7 @@ class Job{
      */
     public function getAnnonsid()
     {
-        return $this->annonsid;
+        return $this->checkValue($this->annonsid);
     }
 
     /**
@@ -59,7 +66,7 @@ class Job{
      */
     public function getAnnonsrubrik()
     {
-        return $this->annonsrubrik;
+        return $this->checkValue($this->annonsrubrik);
     }
 
     /**
@@ -67,7 +74,7 @@ class Job{
      */
     public function getAnnonstext()
     {
-        return $this->annonstext;
+        return $this->checkValue($this->annonstext);
     }
 
     /**
@@ -75,7 +82,7 @@ class Job{
      */
     public function getAntalPlatser()
     {
-        return $this->antal_platser;
+        return $this->checkValue($this->antal_platser);
     }
 
     /**
@@ -83,7 +90,7 @@ class Job{
      */
     public function getArbetstid()
     {
-        return $this->arbetstid;
+        return $this->checkValue($this->arbetstid);
     }
 
     /**
@@ -91,7 +98,7 @@ class Job{
      */
     public function getArbetstidvaraktighet()
     {
-        return $this->arbetstidvaraktighet;
+        return $this->checkValue($this->arbetstidvaraktighet);
     }
 
     /**
@@ -99,7 +106,7 @@ class Job{
      */
     public function getKommunnamn()
     {
-        return $this->kommunnamn;
+        return $this->checkValue($this->kommunnamn);
     }
 
     /**
@@ -107,7 +114,7 @@ class Job{
      */
     public function getLonetyp()
     {
-        return $this->lonetyp;
+        return $this->checkValue($this->lonetyp);
     }
 
     /**
@@ -115,7 +122,7 @@ class Job{
      */
     public function getPubliceraddatum()
     {
-        return $this->publiceraddatum;
+        return $this->checkValue($this->publiceraddatum);
     }
 
     /**
@@ -123,7 +130,7 @@ class Job{
      */
     public function getWebbplats()
     {
-        return $this->webbplats;
+        return $this->checkValue($this->webbplats);
     }
 
     /**
@@ -131,6 +138,6 @@ class Job{
      */
     public function getYrkesbenamning()
     {
-        return $this->yrkesbenamning;
+        return $this->checkValue($this->yrkesbenamning);
     }
 }

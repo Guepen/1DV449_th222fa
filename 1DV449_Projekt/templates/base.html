@@ -15,12 +15,19 @@
         <div class="col-md-12">
             <div class="page-header">
                 <h2>Jobbsök <small>Vi hjälper dig hitta ditt nya jobb!</small></h2>
+                <div id="fb-root"></div>
+                <div class="fb-share-button" data-href="http://localhost:63342/1DV449_th222fa/1DV449_Projekt/" data-layout="button"></div>
+                <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+                </fb:login-button>
+                <p id="status" class="pull-right"> Inte Inloggad med Facebook
+                </p>
             </div>
         </div>
     </div>
     {% block content %}
     {% endblock %}
 </div>
+<script src="js/FacebookOAuth.js"></script>
 <script src="js/Province.js"></script>
 <script src="js/Error.js"></script>
 <script src="js/OccupationArea.js"></script>

@@ -15,6 +15,7 @@ CustomError.prototype.render = function(){
     $("<div class='panel-heading'><h3>"+ this.header +"</h3></div>").appendTo(errorPanel);
     var body = $("<div class='panel-body'><p>"+ this.text +"</p>").appendTo(errorPanel);
     var newSearch = $("<a class='btn btn-primary'>Gör en ny sökning</a></div>").appendTo(body);
+
     newSearch.click(function(){
         JobBoard.renderSearchView();
     })

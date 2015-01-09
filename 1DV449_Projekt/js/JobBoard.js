@@ -5,28 +5,34 @@
 var JobBoard = {
     searchQueries: {'countyId': undefined, 'occupationId': undefined},
     jobList: [],
+    jobAd: [],
 
     init: function(){
+
+        $("#status").change(function(){
+           alert($("#status").text());
+        });
        // alert("hej init");
         JobBoard.getProvinces();
     },
 
     renderSearchView: function(){
+        JobBoard.jobList = [];
         $("#content").empty();
 
         //provinces
         $("<div class='col-md-4'><div id='provinces' class='panel panel-warning'></div></div>").appendTo("#content");
-        $("<div class='panel-heading'><h4 class='center'></h4>Steg 1. Välj Län</div>").appendTo("#provinces");
+        $("<div class='panel-heading'><h4 class='center'>Steg 1. Välj Län</h4</div>").appendTo("#provinces");
         $("<div class='panel-body'><ul id='provincesList'></ul></div>").appendTo("#provinces");
 
         //counties
         $("<div class='col-md-4'><div id='counties' class='panel panel-warning'></div></div>").appendTo("#content");
-        $("<div class='panel-heading'><h4 class='center'></h4>Steg 2. Välj kommun</div>").appendTo("#counties");
+        $("<div class='panel-heading'><h4 class='center'>Steg 2. Välj Kommun</h4></div>").appendTo("#counties");
         $("<div class='panel-body'><ul id='countiesList'></ul></div>").appendTo("#counties");
 
         //occupationAreas
         $("<div class='col-md-4'><div id='occupations' class='panel panel-warning'></div></div>").appendTo("#content");
-        $("<div class='panel-heading'><h4 class='center'></h4>Steg 2. Välj kommun</div>").appendTo("#occupations");
+        $("<div class='panel-heading'><h4 class='center'>Steg 3. Välj Yrkesområde</h4></div>").appendTo("#occupations");
         $("<div class='panel-body'><ul id='occupationsList'></ul></div>").appendTo("#occupations");
 
         JobBoard.getProvinces();
@@ -40,7 +46,6 @@ var JobBoard = {
             "data": {"mode": "getProvinces"},
             success: function(data){
                 var id;
-                console.log(data);
                 var provinces = (data);
                 console.log(data);
                 if(provinces.length > 0){
@@ -56,7 +61,7 @@ var JobBoard = {
                 }
             },
 
-            error: function(xhr, text){
+            error: function(){
                 var error = new CustomError("För tillfället kan inte några län hämtas", "Vänligen, försök igen senare" );
                 error.render();
             }
@@ -82,7 +87,7 @@ var JobBoard = {
                 }
             },
 
-            error: function(xhr, text){
+            error: function(){
                 var error = new CustomError("För tillfället kan inte kommuner i valt län hämtas", "Vänligen, försök igen senare" );
                 error.render();
             }
@@ -105,7 +110,7 @@ var JobBoard = {
                 }
             },
 
-            error: function(xhr, text){
+            error: function(){
                 var error = new CustomError("För tillfället kan inte yrkesområden hämtas", "Vänligen, försök igen senare" );
                 error.render();
             }
@@ -134,7 +139,7 @@ var JobBoard = {
                 }
             },
 
-            error: function(xhr, text){
+            error: function(){
                 var error = new CustomError("Ett fel inträffade när listan på matchande jobb skulle hämtas", "Vänligen, försök igen" );
                 error.render();
             }
@@ -165,6 +170,7 @@ var JobBoard = {
                    var jobAd = new JobAd(data.annonsrubrik, data.annonstext, data.publiceraddatum, data.antal_platser,
                        data.kommunnamn, data.arbetsplatsnamn, data.arbetstidvaraktighet, data.arbetstid, data.lonetyp, data.yrkesbenamning,
                        data.webbplats, data.facebook, data.streetName, data.postCode, data.postArea);
+                    JobBoard.jobAd.push(jobAd);
 
                     jobAd.render();
                 }

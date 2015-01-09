@@ -65,10 +65,8 @@ class WorkRepository extends Database implements IWorkRepository  {
 
             $result = $query->fetchAll();
             if ($result) {
-                $time = new DateTime();
-                $time = $time->getTimestamp();
                 $latestUpdate = $result[0]['nextUpdate'];
-                if($time < $latestUpdate ){
+                if(time() < $latestUpdate ){
                     //var_dump("cache");
                     return $result;
                 }

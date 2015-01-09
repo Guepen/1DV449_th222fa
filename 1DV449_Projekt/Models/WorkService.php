@@ -193,7 +193,7 @@ class WorkService {
 
     private function checkValue($value, $propertyName){
         if(isset($value[0]['address'][$propertyName])){
-            return $value;
+            return $value[0]['address'][$propertyName];
         }
         return 'saknas';
     }
