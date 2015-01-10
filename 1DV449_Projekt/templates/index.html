@@ -1,38 +1,45 @@
-{% extends 'base.html' %}
+{% extends 'layout.html' %}
 {% block content %}
 <div class="row">
     <div class="col-md-12">
         <div class="jumbotron">
             <div class="row" id="content">
-                <div class="col-md-4">
-                    <div id="provinces" class="panel panel-warning">
-                        <div class="panel-heading">
-                            <h4 class="center">Steg 1. Välj Län</h4>
-                        </div>
-                        <div class='panel-body'>
-                            <ul id="provincesList"></ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                <div id="counties" class="panel panel-warning ">
-                    <div class="panel-heading">
-                        <h4>Steg 2. Välj Kommun</h4>
-                    </div>
-                    <div class="panel-body">
-                        <ul id="countiesList"></ul>
-                    </div>
-                </div>
-                </div>
-                <div class="col-md-4">
-                    <div id="occupations" class="panel panel-warning ">
-                        <div class="panel-heading">
-                            <h4>Steg 3. Välj Yrkesområde</h4>
-                        </div>
-                        <div class="panel-body">
-                            <ul id="occupationsList"></ul>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div id="provinces" class="panel panel-warning">
+                            <div class="panel-heading">
+                                <h4 class="center">Steg 1. Välj Län</h4>
+                            </div>
+                            <div class='panel-body'>
+                                <ul id="provincesList"></ul>
+                            </div>
                         </div>
                     </div>
+
+
+                    <div class="col-md-4">
+                        <div id="counties" class="panel panel-warning ">
+                            <div class="panel-heading">
+                                <h4>Steg 2. Välj Kommun</h4>
+                            </div>
+                            <div class="panel-body">
+                                <ul id="countiesList"></ul>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-4">
+                        <div id="occupations" class="panel panel-warning ">
+                            <div class="panel-heading">
+                                <h4>Steg 3. Välj Yrkesområde</h4>
+                            </div>
+                            <div class="panel-body">
+                                <ul id="occupationsList"></ul>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>

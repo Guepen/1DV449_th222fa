@@ -29,22 +29,26 @@ var JobBoard = {
             "type": "POST",
             "url": "connection.json",
             "dataType": "json",
+            "timeout": 3000,
             "data": {"mode": "getProvinces"},
             success: function (data) {
                if(data.connection === 'connected'){
                    JobBoard.onlineAlert();
-                   JobBoard.online = true;
                } else{
-                   JobBoard.offlineAlert();
-                   JobBoard.offlineJobList();
-                   JobBoard.online = false;
+                   if (JobBoard.online) {
+                       JobBoard.offlineAlert();
+                       JobBoard.offlineJobList();
+                       JobBoard.online = false;
+                   }
                }
             },
 
             error: function(){
-                JobBoard.offlineAlert();
-                JobBoard.offlineJobList();
-                JobBoard.online = false;
+                if (JobBoard.online) {
+                    JobBoard.offlineAlert();
+                    JobBoard.offlineJobList();
+                    JobBoard.online = false;
+                }
             }
         })
     },
@@ -58,58 +62,64 @@ var JobBoard = {
 
     onlineAlert: function(){
         if (JobBoard.online === false) {
+            JobBoard.online = true;
+            $("#offlineContent").remove();
             $("#content").empty();
-            $("<div class='col-md-6'><div id='online' class='alert alert-warning'></div></div>").appendTo("#content");
-            $("<p>Du har nu återfått din internetanslutning</p>").appendTo("#online");
+            $("<div class='row'><div class='col-md-12'><div id='online' class='alert alert-success'></div></div></div>").
+                insertBefore(".jumbotron");
+            $("<h3 class='center'>Du har nu återfått din internetanslutning</h3>").appendTo("#online");
             JobBoard.renderSearchView();
         }
     },
 
     offlineAlert: function(){
         $("#content").empty();
-        $("<div class='col-md-6'><div id='offline' class='alert alert-warning'></div></div>").appendTo("#content");
-        $("<p>Det verkar som du har tappat din internetanslutning" +
-        " men du kan fortfarande komma åt de jobb som du har visat tidigare</p>").appendTo("#offline");
+        $("<div class='row'><div id='offlineContent' class='col-md-12'><div id='offline' class='alert alert-warning'>" +
+        "</div></div></div>").insertBefore(".jumbotron");
+        $("<h3>Det verkar som du har tappat din internetanslutning" +
+        " men du kan fortfarande komma åt de jobb som du har visat tidigare</h3>").appendTo("#offline");
     },
 
     offlineJobList: function(){
-        var panel = $("<div class='panel panel-success'></div>").appendTo("#content");
-        $("<div class='panel-heading'><h5>" + this.header + "</h5></div> ").appendTo(panel);
-
-        var body = $("<div class='panel-body'></div>").appendTo(panel);
-        console.log(JobBoard.jobListsId);
         var listsId = JSON.parse(localStorage["jobListsId"]);
-        listsId.forEach(function(listId){
-            var list = JSON.parse(localStorage.getItem("jobList"+listId.occupationId+listId.countyId));
-            console.log(list);
-            list.forEach(function(jobItem){
-                var job = new Job(jobItem.annonsid, jobItem.annonsrubrik, jobItem.yrkesbenamning);
-                job.render();
-            })
+        if (listsId.length > 0) {
+            console.log(JobBoard.jobListsId);
+            listsId.forEach(function (listId) {
+                var list = JSON.parse(localStorage.getItem("jobList" + listId.occupationId + listId.countyId));
+                console.log(list);
+                list.forEach(function (jobItem) {
+                    var job = new Job(jobItem.annonsid, jobItem.annonsrubrik, jobItem.yrkesbenamning);
+                    job.render();
+                })
 
-        });
+            });
 
-/*
-        jobLink.click(function(){
-            JobBoard.getJob(event.target.id);
-        })  */
+        } else{
+            var panel = $("<div class='panel panel-warning'></div>").appendTo("#content");
+            $("<div class='panel-heading'><h3>Du verkar inte ha visat några jobb innan</h3></div> ").appendTo(panel);
+
+            var body = $("<div class='panel-body'><p>Var vänliga tills du återfår din internetanslutning</p></div>").appendTo(panel);
+        }
     },
     renderSearchView: function(){
         JobBoard.jobList = [];
         //$("#content").empty();
 
         //provinces
-        $("<div class='col-md-4'><div id='provinces' class='panel panel-warning'></div></div>").appendTo("#content");
+        $("<div class='col-md-4'><div id='provinces' class='panel panel-warning'></div></div>").
+            appendTo("#content");
         $("<div class='panel-heading'><h4 class='center'>Steg 1. Välj Län</h4</div>").appendTo("#provinces");
         $("<div class='panel-body'><ul id='provincesList'></ul></div>").appendTo("#provinces");
 
         //counties
-        $("<div class='col-md-4'><div id='counties' class='panel panel-warning'></div></div>").appendTo("#content");
+        $("<div class='col-md-4'><div id='counties' class='panel panel-warning'></div></div>").
+            appendTo("#content");
         $("<div class='panel-heading'><h4 class='center'>Steg 2. Välj Kommun</h4></div>").appendTo("#counties");
         $("<div class='panel-body'><ul id='countiesList'></ul></div>").appendTo("#counties");
 
         //occupationAreas
-        $("<div class='col-md-4'><div id='occupations' class='panel panel-warning'></div></div>").appendTo("#content");
+        $("<div class='col-md-4'><div id='occupations' class='panel panel-warning'></div></div>").
+            appendTo("#content");
         $("<div class='panel-heading'><h4 class='center'>Steg 3. Välj Yrkesområde</h4></div>").appendTo("#occupations");
         $("<div class='panel-body'><ul id='occupationsList'></ul></div>").appendTo("#occupations");
 
