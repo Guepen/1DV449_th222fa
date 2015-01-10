@@ -2,6 +2,11 @@
  * Created by Tobias on 2014-12-12.
  */
 
+/**
+ * @param occupationId
+ * @param occupationName
+ * @constructor
+ */
 function OccupationArea(occupationId, occupationName){
     this.occupationId = occupationId;
     this.occupationName = occupationName;
@@ -16,7 +21,9 @@ OccupationArea.prototype.render = function(){
     occupationLink.appendTo(li);
 
     occupationLink.click(function(){
-        JobBoard.searchQueries.occupationId = that.occupationId;
-        JobBoard.getJobs(JobBoard.searchQueries.occupationId, JobBoard.searchQueries.countyId);
+        if (JobBoard.online) {
+            JobBoard.searchQueries.occupationId = that.occupationId;
+            JobBoard.getJobs(JobBoard.searchQueries.occupationId, JobBoard.searchQueries.countyId);
+        }
     })
 };

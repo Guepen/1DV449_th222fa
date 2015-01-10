@@ -2,11 +2,19 @@
  * Created by Tobias on 2014-12-12.
  */
 
+/**
+ * @param countyId
+ * @param countyName
+ * @constructor
+ */
 function County(countyId, countyName){
     this.countyId = countyId;
     this.countyName = countyName;
 }
 
+/**
+ * renders a county and adds a click-event to it
+ */
 County.prototype.render = function(){
     var that = this;
     var ul = $("#countiesList");
@@ -16,9 +24,11 @@ County.prototype.render = function(){
     countyLink.appendTo(li);
 
     countyLink.click(function(){
-        $("#occupationsList").empty();
-        JobBoard.searchQueries.countyId = that.countyId;
-        JobBoard.getOccupationAreas();
-        $("#counties").removeClass("panel-warning").addClass("panel panel-success");
+        if (JobBoard.online) {
+            $("#occupationsList").empty();
+            JobBoard.searchQueries.countyId = that.countyId;
+            JobBoard.getOccupationAreas();
+            $("#counties").removeClass("panel-warning").addClass("panel panel-success");
+        }
     })
 };

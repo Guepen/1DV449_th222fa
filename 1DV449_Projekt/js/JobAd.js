@@ -1,8 +1,28 @@
 /**
  * Created by Tobias on 2015-01-05.
  */
+
+/**
+ * @param header
+ * @param jobText
+ * @param published
+ * @param numberOfJobs
+ * @param countyName
+ * @param workLocationName
+ * @param duration
+ * @param workHours
+ * @param salaryType
+ * @param jobName
+ * @param website
+ * @param facebook
+ * @param streetName
+ * @param postCode
+ * @param postArea
+ * @constructor
+ */
 function JobAd(header, jobText, published, numberOfJobs, countyName, workLocationName, duration, workHours, salaryType,
                jobName, website, facebook, streetName, postCode, postArea){
+
     this.header = header;
     this.jobText = jobText;
     this.published = new Date(published);
@@ -20,9 +40,11 @@ function JobAd(header, jobText, published, numberOfJobs, countyName, workLocatio
     this.postArea = postArea;
 }
 
+/**
+ * renders the jobAd
+ */
 JobAd.prototype.render = function(){
     var website;
-    var facebook;
 
     var backLink = $("<a href='#'>Tillbaka till sökresultatet</a>").appendTo("#content");
     backLink.click(function(){
@@ -58,6 +80,10 @@ JobAd.prototype.render = function(){
 
 };
 
+/**
+ *
+ * @returns {string} html-code for the facebook-link
+ */
 JobAd.prototype.renderFacebook = function(){
     var status = $("#status").text();
     switch (status){
@@ -72,6 +98,10 @@ JobAd.prototype.renderFacebook = function(){
 
 };
 
+/**
+ *
+ * @returns {string} a nice looking date
+ */
 JobAd.prototype.getPublishedDate = function(){
   return this.published.getFullYear() + "-" + this.published.getMonth() + 1 + "-" + this.published.getDate();
 };

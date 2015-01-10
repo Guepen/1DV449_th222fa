@@ -2,6 +2,16 @@
  * Created by Tobias on 2014-12-11.
  */
 
+/**
+ * Contains in this order:
+ * @type {
+ * {searchQueries: {countyId: undefined, occupationId: undefined}, jobList: Array, jobAd: Array,
+ * jobListsId: Array, online: boolean, init: Function, checkConnection: Function,
+ * addToLocalStorage: Function, onlineAlert: Function, offlineAlert: Function, offlineJobList: Function,
+ * renderSearchView: Function, getProvinces: Function, getCounties: Function, getOccupationAreas: Function,
+ * getJobs: Function, supportsLocalStorage: Function, renderJobList: Function, getJob: Function}
+ * }
+ */
 var JobBoard = {
     searchQueries: {'countyId': undefined, 'occupationId': undefined},
     jobList: [],
@@ -9,12 +19,12 @@ var JobBoard = {
     jobListsId: [],
     online: true,
 
+    /**
+     * called on window.onload
+     */
     init: function(){
-        //om ett fel inträffar
-        window.applicationCache.addEventListener("error", function(e) {
-            JobBoard.offlineJobList();
-        });
 
+        //sets an interval to check if the server i available
         setInterval(function(){
             JobBoard.checkConnection();
         }, 3000);
@@ -24,6 +34,9 @@ var JobBoard = {
         }
     },
 
+    /**
+     * tries to get a small JSON-file from the server
+     */
     checkConnection: function(){
         $.ajax({
             "type": "POST",
@@ -31,16 +44,8 @@ var JobBoard = {
             "dataType": "json",
             "timeout": 3000,
             "data": {"mode": "getProvinces"},
-            success: function (data) {
-               if(data.connection === 'connected'){
-                   JobBoard.onlineAlert();
-               } else{
-                   if (JobBoard.online) {
-                       JobBoard.offlineAlert();
-                       JobBoard.offlineJobList();
-                       JobBoard.online = false;
-                   }
-               }
+            success: function () {
+                JobBoard.onlineAlert();
             },
 
             error: function(){
@@ -65,9 +70,14 @@ var JobBoard = {
             JobBoard.online = true;
             $("#offlineContent").remove();
             $("#content").empty();
-            $("<div class='row'><div class='col-md-12'><div id='online' class='alert alert-success'></div></div></div>").
-                insertBefore(".jumbotron");
+            $("<div id='onlineContent' class='row'><div class='col-md-12'><div id='online' class='alert alert-success'>" +
+            "</div></div></div>").insertBefore(".jumbotron");
             $("<h3 class='center'>Du har nu återfått din internetanslutning</h3>").appendTo("#online");
+
+            //delete online-alert after ten seconds
+            setTimeout(function(){
+                $("#onlineContent").remove();
+            },10000);
             JobBoard.renderSearchView();
         }
     },
@@ -108,7 +118,7 @@ var JobBoard = {
         //provinces
         $("<div class='col-md-4'><div id='provinces' class='panel panel-warning'></div></div>").
             appendTo("#content");
-        $("<div class='panel-heading'><h4 class='center'>Steg 1. Välj Län</h4</div>").appendTo("#provinces");
+        $("<div class='panel-heading'><h4 class='center'>Steg 1. Välj Län</h4></div>").appendTo("#provinces");
         $("<div class='panel-body'><ul id='provincesList'></ul></div>").appendTo("#provinces");
 
         //counties
@@ -174,7 +184,7 @@ var JobBoard = {
                     var counties = data;
                     if (counties.length > 0) {
                         counties.forEach(function (county) {
-                            var newCounty = new County(county.countyId, county.namn, county.antal_platsannonser)
+                            var newCounty = new County(county.countyId, county.namn, county.antal_platsannonser);
                             newCounty.render();
                         })
                     }

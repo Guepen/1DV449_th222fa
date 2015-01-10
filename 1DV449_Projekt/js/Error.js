@@ -2,6 +2,12 @@
  * Created by Tobias on 2015-01-08.
  */
 
+/**
+ *
+ * @param header text
+ * @param text errortext
+ * @constructor
+ */
 function CustomError(header, text){
     this.header = header;
     this.text = text;

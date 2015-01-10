@@ -2,9 +2,15 @@
  * Created by Tobias on 2014-12-29.
  */
 
-function Job(jobbId, header, jobName){
+/**
+ * @param jobId
+ * @param header
+ * @param jobName
+ * @constructor
+ */
+function Job(jobId, header, jobName){
 
-    this.jobId = jobbId;
+    this.jobId = jobId;
     this.header = header;
     this.jobName = jobName;
 }
@@ -18,6 +24,8 @@ Job.prototype.render = function(){
     var jobLink = $("<a id='"+ this.jobId +"' href='#'>" + this.jobName + "</a>").appendTo(body);
 
     jobLink.click(function(){
-        JobBoard.getJob(event.target.id);
+        if (JobBoard.online) {
+            JobBoard.getJob(event.target.id);
+        }
     })
 };
