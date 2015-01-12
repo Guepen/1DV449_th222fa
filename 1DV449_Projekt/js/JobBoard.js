@@ -17,6 +17,7 @@ var JobBoard = {
     jobList: [],
     jobAd: [],
     jobAdsId: [],
+    storage: sessionStorage,
     online: true,
 
     /**
@@ -164,19 +165,22 @@ var JobBoard = {
                 "data": {"mode": "getProvinces"},
                 success: function (data) {
                     var id;
-                    var provinces = (data);
                     console.log(data);
-                    if (provinces.length > 0) {
-                        provinces.forEach(function (province) {
-                            if (province.provinceId == undefined) {
-                                id = province.id;
-                            } else {
-                                id = province.provinceId;
-                            }
-                            var newProvince = new Province(id, province.namn, province.antal_platsannonser);
-                            newProvince.render();
-                        })
+                    if (data.error) {
+                        this.error();
+                        return false;
                     }
+                    var provinces = (data);
+                    provinces.forEach(function (province) {
+                        if (province.provinceId == undefined) {
+                            id = province.id;
+                        } else {
+                            id = province.provinceId;
+                        }
+                        var newProvince = new Province(id, province.namn, province.antal_platsannonser);
+                        newProvince.render();
+                    })
+
                 },
 
                 error: function () {
@@ -198,8 +202,11 @@ var JobBoard = {
                 "dataType": "json",
                 "data": {"mode": "getCounties", "provinceId": provinceId},
                 success: function (data) {
+                    if (data.error) {
+                        this.error();
+                        return false;
+                    }
                     $("#countiesList").empty();
-                    console.log(data);
 
                     var counties = data;
                     if (counties.length > 0) {
@@ -233,6 +240,10 @@ var JobBoard = {
                 "dataType": "json",
                 "data": {"mode": "getOccupationAreas"},
                 success: function (data) {
+                    if (data.error) {
+                        this.error();
+                        return false;
+                    }
                     $("#occupationsList").empty();
                     if (data.length > 0) {
                         data.forEach(function (occupationArea) {
@@ -267,6 +278,12 @@ var JobBoard = {
                 "dataType": "json",
                 "data": {"mode": "getJobs", "countyId": countyId, "occupationAreaId": occupationAreaId},
                 success: function (data) {
+                    if (data.error) {
+                        var error = new CustomError("Det finns inga lediga jobb som matchar din sökning",
+                            "Vänligen, gör en ny sökning");
+                        error.render();
+                        return false;
+                    }
                     if (data.length > 0) {
                         data.forEach(function (job) {
                             var newJob = new Job(job.annonsid, job.annonsrubrik, job.yrkesbenamning);
@@ -339,6 +356,11 @@ var JobBoard = {
                 "dataType": "json",
                 "data": {"mode": "getJob", "jobAdId": jobAdId},
                 success: function (data) {
+                    if (data.error) {
+                        this.error();
+                        return false;
+                    }
+
                     if (data) {
                         var jobAd = new JobAd(data.annonsrubrik, data.annonstext, data.publiceraddatum, data.antal_platser,
                             data.kommunnamn, data.arbetsplatsnamn, data.arbetstidvaraktighet, data.arbetstid, data.lonetyp, data.yrkesbenamning,

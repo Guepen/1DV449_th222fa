@@ -214,7 +214,7 @@ class WorkService {
 
         if($response == null){
             return array(
-                'error' => 'Ett fel inträffade'
+                'error' => true
             );
         } else{
            return $response;
