@@ -133,8 +133,6 @@ var JobBoard = {
     },
     renderSearchView: function(){
         JobBoard.jobList = [];
-        //$("#content").empty();
-
         //provinces
         $("<div class='col-md-4'><div id='provinces' class='panel panel-warning'></div></div>").
             appendTo("#content");

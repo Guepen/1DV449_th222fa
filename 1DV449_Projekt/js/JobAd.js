@@ -41,6 +41,7 @@ function JobAd(header, jobText, published, numberOfJobs, countyName, workLocatio
 }
 
 /**
+ * todo: fix this function. Looking like shit
  * renders the jobAd
  */
 JobAd.prototype.render = function(){

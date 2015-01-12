@@ -18,14 +18,14 @@ require_once('Job.php');
  */
 class WorkService {
     private $repository;
-    private $workService;
-    private $eniroWorkService;
+    private $jobWebService;
+    private $eniroWebService;
 
     public function __construct(IWorkRepository $repository, IArbetsformedlingWebService $workWebService,
                                 IEniroWebService $enrioWorkService){
         $this->repository = $repository;
-        $this->workService = $workWebService;
-        $this->eniroWorkService = $enrioWorkService;
+        $this->jobWebService = $workWebService;
+        $this->eniroWebService = $enrioWorkService;
     }
 
     /**
@@ -34,17 +34,21 @@ class WorkService {
     public function getProvinces(){
         $provinces = $this->repository->find('provinces', null, null);
         if($provinces == null){
-            $provinces = $this->workService->getProvinces();
+            $provinces = $this->jobWebService->getProvinces();
             $provinces = json_decode($provinces, true);
-            foreach($provinces['soklista']['sokdata'] as $key => $province){
-                $this->repository->add('provinces', array('provinceId', 'namn', 'antal_platsannonser', 'nextUpdate') ,
-                    array($province['id'], $province['namn'], $province['antal_platsannonser'], time() + strtotime("+1 hour")));
-            }
+            if (isset($provinces['soklista']['sokdata'])) {
+                foreach ($provinces['soklista']['sokdata'] as $key => $province) {
+                    $this->repository->add('provinces', array('provinceId', 'namn', 'antal_platsannonser', 'nextUpdate'),
+                        array($this->checkForTags($province['id']), $this->checkForTags($province['namn']),
+                            $this->checkForTags($province['antal_platsannonser']), time() + strtotime("+1 hour")));
+                }
 
-           return $this->sendResponse($provinces['soklista']['sokdata']);
+                return $this->sendResponse($provinces['soklista']['sokdata']);
+            }
         } else {
             return $this->sendResponse($provinces);
         }
+        return $this->sendResponse(null);
     }
 
     /**
@@ -54,13 +58,14 @@ class WorkService {
     public function getCounties($provinceId){
         $counties = $this->repository->find('counties', 'provinceId', $provinceId);
         if($counties == null){
-            $counties = $this->workService->getCounties($provinceId);
+            $counties = $this->jobWebService->getCounties($provinceId);
             $counties = json_decode($counties, true);
             if (isset($counties['soklista']['sokdata'])) {
                 foreach ($counties['soklista']['sokdata'] as $key => $county) {
-                    $this->repository->add('counties', array('countyId', 'provinceId', 'namn', 'antal_platsannonser', 'nextUpdate'),
-                        array($county['id'], $provinceId,
-                            $county['namn'], $county['antal_platsannonser'], time() + strtotime("+5 minutes")));
+                    $this->repository->add('counties', array('countyId', 'provinceId', 'namn',
+                            'antal_platsannonser', 'nextUpdate'),
+                        array($this->checkForTags($county['id']), $provinceId, $this->checkForTags($county['namn']),
+                            $this->checkForTags($county['antal_platsannonser']), time() + strtotime("+1 hour")));
                 }
                 return $this->sendResponse($counties['soklista']['sokdata']);
             }
@@ -77,12 +82,13 @@ class WorkService {
     public function getOccupationAreas(){
         $occupationAreas = $this->repository->find("occupationareas", null, null);
         if($occupationAreas == null){
-            $occupationAreas = $this->workService->getOccupationAreas();
+            $occupationAreas = $this->jobWebService->getOccupationAreas();
             $occupationAreas = json_decode($occupationAreas, true);
             if (isset($occupationAreas['soklista']['sokdata'])) {
                 foreach ($occupationAreas['soklista']['sokdata'] as $key => $occupationArea) {
                     $this->repository->add('occupationareas', array('occupationAreaId', 'namn', 'nextUpdate'),
-                        array($occupationArea['id'], $occupationArea['namn'], time() + strtotime("+5 minutes")));
+                        array($this->checkForTags($occupationArea['id']),
+                            $this->checkForTags($occupationArea['namn']), time() + strtotime("+5 minutes")));
                 }
                 return $this->sendResponse(($occupationAreas['soklista']['sokdata']));
             }
@@ -95,14 +101,15 @@ class WorkService {
     public function getJobs($countyId, $occupationAreaId){
         $jobs = $this->repository->findJobs($countyId, $occupationAreaId);
         if($jobs == null){
-            $jobs = $this->workService->getJobs($countyId, $occupationAreaId);
+            $jobs = $this->jobWebService->getJobs($countyId, $occupationAreaId);
             $jobs = json_decode($jobs, true);
             if (isset($jobs['matchningslista']['matchningdata'])) {
                 foreach ($jobs['matchningslista']['matchningdata'] as $key => $job) {
-                    $this->repository->add('jobs', array('countyId', 'occupationAreaId', 'annonsrubrik', 'yrkesbenamning',
-                            'annonsid', 'nextUpdate'),
-                        array($countyId, $occupationAreaId, $job['annonsrubrik'], $job['yrkesbenamning'], $job['annonsid']
-                        , time() + strtotime("+1 hour")));
+                    $this->repository->add('jobs', array('countyId', 'occupationAreaId', 'annonsrubrik',
+                            'yrkesbenamning', 'annonsid', 'nextUpdate'),
+                        array($countyId, $occupationAreaId, $this->checkForTags($job['annonsrubrik']),
+                            $this->checkForTags($job['yrkesbenamning']),
+                            $this->checkForTags($job['annonsid']), time() + strtotime("+1 hour")));
                 }
                 return $this->sendResponse($jobs['matchningslista']['matchningdata']);
             }
@@ -112,28 +119,29 @@ class WorkService {
         return $this->sendResponse(null);
     }
 
+    //todo: fix this function. Looks like shit!
     public function getJob($jobAdId){
         $job = $this->repository->find('jobads', 'annonsid', $jobAdId);
         if($job == null){
-            $job = ($this->workService->getJob($jobAdId));
+            $job = ($this->jobWebService->getJob($jobAdId));
             $job = json_decode($job, true);
 
             if (isset($job['platsannons']['annons']['annonsid'])) {
-                if (isset($job['platsannons']['ansokan']['webbplats']) == false) {
-                    $website = "saknas";
-                } else {
-                    $website = $job['platsannons']['ansokan']['webbplats'];
-                }
-
-                $job = new Job($job['platsannons']['annons']['annonsrubrik'], $job['platsannons']['annons']['annonstext'],
-                    $job['platsannons']['annons']['publiceraddatum'], $job['platsannons']['annons']['antal_platser'],
-                    $job['platsannons']['annons']['kommunnamn'], $job['platsannons']['arbetsplats']['arbetsplatsnamn'],
-                    $job['platsannons']['villkor']['arbetstidvaraktighet'], $job['platsannons']['villkor']['arbetstid'],
-                    $job['platsannons']['villkor']['lonetyp'], $job['platsannons']['annons']['yrkesbenamning'],
-                    $website, $job['platsannons']['annons']['annonsid']);
+                $job = new Job($this->checkForTags($job['platsannons']['annons']['annonsrubrik']),
+                    $this->checkForTags($job['platsannons']['annons']['annonstext']),
+                    $this->checkForTags($job['platsannons']['annons']['publiceraddatum']),
+                    $this->checkForTags($job['platsannons']['annons']['antal_platser']),
+                    $this->checkForTags($job['platsannons']['annons']['kommunnamn']),
+                    $this->checkForTags($job['platsannons']['arbetsplats']['arbetsplatsnamn']),
+                    $this->checkForTags($job['platsannons']['villkor']['arbetstidvaraktighet']),
+                    $this->checkForTags($job['platsannons']['villkor']['arbetstid']),
+                    $this->checkForTags($job['platsannons']['villkor']['lonetyp']),
+                    $this->checkForTags($job['platsannons']['annons']['yrkesbenamning']),
+                    $this->checkForTags($job['platsannons']['ansokan']['webbplats']),
+                    $this->checkForTags($job['platsannons']['annons']['annonsid']));
 
                 //todo: companyInformation should be an own function and table
-                $companyInformation = json_decode($this->eniroWorkService->getCompanyInformation($job->getArbetsplatsnamn(),
+                $companyInformation = json_decode($this->eniroWebService->getCompanyInformation($job->getArbetsplatsnamn(),
                     $job->getKommunnamn()), true);
 
                 if (isset($companyInformation['adverts'][0]['facebook'])) {
@@ -142,9 +150,9 @@ class WorkService {
                     $facebook = 'saknas';
                 }
 
-                $streetName = $this->checkValue($companyInformation['adverts'], 'streetName');
-                $postCode = $this->checkValue($companyInformation['adverts'], 'postCode');
-                $postArea = $this->checkValue($companyInformation['adverts'], 'postArea');
+                $streetName = $this->checkAddressValue($companyInformation['adverts'], 'streetName');
+                $postCode = $this->checkAddressValue($companyInformation['adverts'], 'postCode');
+                $postArea = $this->checkAddressValue($companyInformation['adverts'], 'postArea');
 
                 $this->repository->add('jobads', array('annonsrubrik', 'annonstext', 'publiceraddatum', 'antal_platser', 'kommunnamn',
                         'arbetsplatsnamn', 'arbetstidvaraktighet', 'arbetstid', 'lonetyp', 'yrkesbenamning', 'webbplats', 'annonsid',
@@ -199,11 +207,18 @@ class WorkService {
             );
     }
 
-    private function checkValue($value, $propertyName){
+    private function checkAddressValue($value, $propertyName){
         if(isset($value[0]['address'][$propertyName])){
             return $value[0]['address'][$propertyName];
         }
         return 'saknas';
+    }
+
+    private function checkForTags($value){
+        if (isset($value)) {
+            return strip_tags($value);
+        }
+        return "saknas";
     }
 
     /**
