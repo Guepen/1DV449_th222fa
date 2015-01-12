@@ -22,10 +22,6 @@ class WorkController {
         $this->workService = new WorkService(new WorkRepository(), new ArbetsformedlingenWebService(), new EniroWebService());
         $mode = $this->fetch('mode');
         switch($mode){
-            case 'start':
-                $templateEngine = new h2o('templates/index.html');
-                echo $templateEngine->render();
-                break;
             case 'getProvinces':
               echo json_encode($this->workService->getProvinces());
                 break;

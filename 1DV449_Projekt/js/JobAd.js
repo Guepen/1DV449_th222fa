@@ -27,7 +27,7 @@ function JobAd(header, jobText, published, numberOfJobs, countyName, workLocatio
     this.jobText = jobText;
     this.published = new Date(published);
     this.numberOfJobs = numberOfJobs;
-    this.coutyName = countyName;
+    this.countyName = countyName;
     this.workLocationName = workLocationName;
     this.duration = duration;
     this.workHours = workHours;
@@ -55,7 +55,7 @@ JobAd.prototype.render = function(){
     $("<div class='panel-heading'><h3>" + this.header +" <small class='pull-right'>publicerad: " + this.getPublishedDate()
     + "</small></h3> </div> ").appendTo(panel);
 
-    var body = $("<div class='panel-body'><p>" + this.jobName + " "+ this.coutyName +"</p></div>").appendTo(panel);
+    var body = $("<div class='panel-body'><p>" + this.jobName + " "+ this.countyName +"</p></div>").appendTo(panel);
 
     $("<div class='col-md-10'><p class='text'>" + this.jobText + "</p></div>").appendTo(body);
 

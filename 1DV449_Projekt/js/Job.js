@@ -26,6 +26,8 @@ Job.prototype.render = function(){
     jobLink.click(function(){
         if (JobBoard.online) {
             JobBoard.getJob(event.target.id);
+        } else{
+            JobBoard.renderChosenOfflineJob(event.target.id)
         }
     })
 };

@@ -36,7 +36,6 @@ class WorkRepository extends Database implements IWorkRepository  {
             }
 
         } catch(Exception $ex){
-            var_dump( $ex->getMessage());
         }
         return null;
     }
@@ -72,11 +71,9 @@ class WorkRepository extends Database implements IWorkRepository  {
                 }
                 $this->remove($table);
                // var_dump("new");
-             return null;
             }
 
         } catch(Exception $ex){
-            return null;
            // var_dump($ex->getMessage());
         }
        return null;
@@ -102,7 +99,6 @@ class WorkRepository extends Database implements IWorkRepository  {
            $query->execute($params);
 
        } catch(Exception $ex){
-           var_dump($ex->getMessage());
        }
     }
 
@@ -117,7 +113,7 @@ class WorkRepository extends Database implements IWorkRepository  {
             $query->execute();
 
         } catch(Exception $ex){
-            //var_dump($ex->getMessage());
+            var_dump($ex->getMessage());
         }
     }
 }
