@@ -40,7 +40,7 @@ class WorkService {
                 foreach ($provinces['soklista']['sokdata'] as $key => $province) {
                     $this->repository->add('provinces', array('provinceId', 'namn', 'antal_platsannonser', 'nextUpdate'),
                         array($this->checkForTags($province['id']), $this->checkForTags($province['namn']),
-                            $this->checkForTags($province['antal_platsannonser']), time() + strtotime("+1 hour")));
+                            $this->checkForTags($province['antal_platsannonser']), strtotime("+1 hour")));
                 }
 
                 return $this->sendResponse($provinces['soklista']['sokdata']);
@@ -65,7 +65,7 @@ class WorkService {
                     $this->repository->add('counties', array('countyId', 'provinceId', 'namn',
                             'antal_platsannonser', 'nextUpdate'),
                         array($this->checkForTags($county['id']), $provinceId, $this->checkForTags($county['namn']),
-                            $this->checkForTags($county['antal_platsannonser']), time() + strtotime("+1 hour")));
+                            $this->checkForTags($county['antal_platsannonser']), strtotime("+1 hour")));
                 }
                 return $this->sendResponse($counties['soklista']['sokdata']);
             }
@@ -88,7 +88,7 @@ class WorkService {
                 foreach ($occupationAreas['soklista']['sokdata'] as $key => $occupationArea) {
                     $this->repository->add('occupationareas', array('occupationAreaId', 'namn', 'nextUpdate'),
                         array($this->checkForTags($occupationArea['id']),
-                            $this->checkForTags($occupationArea['namn']), time() + strtotime("+5 minutes")));
+                            $this->checkForTags($occupationArea['namn']), strtotime("+5 minutes")));
                 }
                 return $this->sendResponse(($occupationAreas['soklista']['sokdata']));
             }
@@ -109,7 +109,7 @@ class WorkService {
                             'yrkesbenamning', 'annonsid', 'nextUpdate'),
                         array($countyId, $occupationAreaId, $this->checkForTags($job['annonsrubrik']),
                             $this->checkForTags($job['yrkesbenamning']),
-                            $this->checkForTags($job['annonsid']), time() + strtotime("+1 hour")));
+                            $this->checkForTags($job['annonsid']), strtotime("+1 hour")));
                 }
                 return $this->sendResponse($jobs['matchningslista']['matchningdata']);
             }
@@ -161,7 +161,7 @@ class WorkService {
                     array($job->getAnnonsrubrik(), $job->getAnnonstext(), $job->getPubliceraddatum(), $job->getAntalPlatser(),
                         $job->getKommunnamn(), $job->getArbetsplatsnamn(), $job->getArbetstidvaraktighet(), $job->getArbetstid(),
                         $job->getLonetyp(), $job->getYrkesbenamning(), $job->getWebbplats(), $job->getAnnonsid(),
-                        time() + strtotime("+1 hour"), $facebook, $streetName, $postCode, $postArea));
+                        strtotime("+1 hour"), $facebook, $streetName, $postCode, $postArea));
 
                 return array(
                     'annonsrubrik' => $job->getAnnonsrubrik(),

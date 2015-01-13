@@ -11,4 +11,6 @@ interface IWorkRepository {
     public function findJobs($countyId, $occupationAreaId);
     public function add($table, array $columns, array $values);
     public function remove($table);
+    public function removeJobs($countyId, $occupationAreaId);
+    public function removeJobAds($jobAdId);
 } 

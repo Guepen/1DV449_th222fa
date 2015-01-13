@@ -1,6 +1,6 @@
 <html manifest="manifest.appcache">
 <head>
-    <title>Jobfinder</title>
+    <title>jobbsök</title>
     <!-- Latest compiled and minified CSS -->
     <link rel='stylesheet' href='//maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css'>
     <!-- Optional theme -->
@@ -22,7 +22,7 @@
                 </div>
                 <h1>Jobbsök <small>Vi hjälper dig att hitta ditt nya jobb!</small></h1>
                 <div id="fb-root"></div>
-                <div class="fb-share-button" data-href="http://localhost:63342/1DV449_th222fa/1DV449_Projekt/" data-layout="button"></div>
+                <div class="fb-share-button" data-href="//jobbsok.tobias-holst.se/" data-layout="button"></div>
                 <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
                 </fb:login-button>
 
@@ -33,7 +33,12 @@
     {% endblock %}
     <footer class='row'>
         <div class='col-md-12'>
-            <h3><small>Producerad av <a href='//tobias-holst.se/' target='_blank'>@Tobias Holst</a></small></h3>
+            <div class="col-md-8">
+                <h3><small>Producerad av <a href='//tobias-holst.se/' target='_blank'>@Tobias Holst</a></small></h3>
+            </div>
+            <div class="col-md 4">
+                <p>Datan är hämtad från Arbetsförmedlingens öppna API</p>
+            </div>
             <p class='lead'></p>
         </div>
     </footer>

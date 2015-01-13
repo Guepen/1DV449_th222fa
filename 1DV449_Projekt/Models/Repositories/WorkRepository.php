@@ -65,11 +65,12 @@ class WorkRepository extends Database implements IWorkRepository  {
             $result = $query->fetchAll();
             if ($result) {
                 $latestUpdate = $result[0]['nextUpdate'];
-                if(time() < $latestUpdate ){
+                $currentTime = time();
+                if($currentTime < $latestUpdate ){
                     //var_dump("cache");
                     return $result;
                 }
-                $this->remove($table);
+                //$this->remove($table);
                // var_dump("new");
             }
 
@@ -113,7 +114,22 @@ class WorkRepository extends Database implements IWorkRepository  {
             $query->execute();
 
         } catch(Exception $ex){
-            var_dump($ex->getMessage());
         }
+    }
+
+    public function removeJobAds($jobAdId)
+    {
+        try{
+            $sql = "DELETE * FROM  jobads WHERE annonsid = ?";
+            $query = $this->db->prepare($sql);
+            $query->execute();
+
+        } catch(Exception $ex){
+        }
+    }
+
+    public function removeJobs($countyId, $occupationAreaId)
+    {
+        // TODO: Implement removeJobs() method.
     }
 }

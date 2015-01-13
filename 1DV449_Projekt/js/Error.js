@@ -23,7 +23,7 @@ CustomError.prototype.render = function(){
     var newSearch = $("<a class='btn btn-primary'>Gör en ny sökning</a></div>").appendTo(body);
 
     newSearch.click(function(){
-        $("#content").empty();
+        content.empty();
         JobBoard.renderSearchView();
     })
 };
