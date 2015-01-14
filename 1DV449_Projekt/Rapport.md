@@ -34,39 +34,47 @@ Serversida
     om API:et svarar returneras det svaret, annars null.
     
 ### Cachning
-    Jag har använt mig av MySql databas för att cachca mitt data på servern och koden följer designmönstret Repository Pattern.
-    Om jag får Ett svar från API:et så sparar jag ner det nödvändiga datat och skickar med en timestamp med värdet för när datat
-    anses vara ofräscht. Jag har valt att cacha mitt data i en timme.
+    Jag har använt mig av MySql databas för att cachca mitt data på servern och koden följer
+    designmönstret Repository Pattern.
+    Om jag får Ett svar från API:et så sparar jag ner det nödvändiga datat och skickar med en 
+    timestamp med värdet för när datat anses vara ofräscht. 
+    Jag har valt att cacha mitt data i en timme.
      
      
 ### Felhantering
     Om jag inte får något svar från mitt API returneras NULL från webservicen till service-klassen. 
-    Service-klassen i sin tur kollar om svaret är null och om väntat data finns. '
-    Om väntat data inte finns returnas ett JSON-svar med error: true som klienten sedan fångar upp och presenterar ett felmeddelande
-    till användaren.
+    Service-klassen i sin tur kollar om svaret är null och om väntat data finns. 
+    Om väntat data inte finns returnas ett JSON-svar med error: true som klienten 
+    sedan fångar upp och presenterar ett felmeddelande till användaren.
     
-    För att inte min applikation ska krascha om ett fel inträffar när man gör ett anrop mot databasen har jag valt att bara lägga
-    en try- cactch runt koden. Här vill jag inte låta användaren få reda på att ett fel har skett.
+    För att inte min applikation ska krascha om ett fel inträffar när man gör ett anrop mot databasen 
+    har jag valt att bara lägga en try- cactch runt koden. 
+    Här vill jag inte låta användaren få reda på att ett fel har skett.
     
     Om jag inte får någon data från databsen returneras null och ett anrop mot API:et görs istället. 
     
 
 Klientsida
 ----------
-    På klienten har mitt största fokus legat då Javascript har blivit något av ett favoritspråk och jag ser fortfarande
-    stora utvecklingsmöjligheter hos mig själv. jag har använt mig native javascript och i största mån, JQuery.
-    Jag har försök att jobba på ett objektorienterat sätt med konstruktorfunktioner och funktioner som läggs på prototypen
+    På klienten har mitt största fokus legat då Javascript har blivit något av ett favoritspråk och 
+    jag ser fortfarande stora utvecklingsmöjligheter hos mig själv.
+    jag har använt mig native javascript och i största mån, JQuery.
+    Jag har försök att jobba på ett objektorienterat sätt med konstruktorfunktioner
+    och funktioner som läggs på prototypen
     
 ### Server-anrop
     Från min klient gör jag AJAX-anrop mot servern för att hämta data i JSON-format.
-    För att få rätt svar skickar jag med data som servern som fångar upp för att sedan avgöra vilket data som skall hämtas.
-    Om svaret inte går att tolka som JSON körs en error-funktion som renderar ut ett lämpligt felmeddelande till användaren.
-    Även andra fel kan inträffa, t.ex. så svarar servern med ett JSON-svar innehållandes bool för att bertätta att fel har 
-    inträffat och även då renderas ett lämpligt felmeddelande till klienten
+    För att få rätt svar skickar jag med data som servern som fångar upp för att 
+    sedan avgöra vilket data som skall hämtas.
+    Om svaret inte går att tolka som JSON körs en error-funktion som renderar ut 
+    ett lämpligt felmeddelande till användaren.
+    Även andra fel kan inträffa, t.ex. så svarar servern med ett JSON-svar innehållandes bool för att 
+    berätta att fel har inträffat och även då renderas ett lämpligt felmeddelande till klienten.
     
 ### Cachning
-    På klienten har jag valt att spara gjorda jobbsökningar i Session Storage så. Detta valde jag att göra dels eftersom man
-    då slipper att kolla om datat är fräscht eller inte och i så fall även ta det bort det.
+    På klienten har jag valt att spara gjorda jobbsökningar i Session Storage så.
+    Detta valde jag att göra dels eftersom man då slipper att kolla om datat 
+    är fräscht eller inte och i så fall även ta det bort det.
     Datat i Session Storage finns nämligen bara kvar så länge sessionen lever.
     
 ##### Hämtning av data
@@ -78,11 +86,11 @@ Klientsida
     Sedan beroende på vad användaren gör för val så sparas all den data som användaren har efterfrågat
 
 #### Reflektion   
-    En annan lösning är t.ex. att spara ner data i Local Storage vilket har fördelen att datat finns kvar även om användaren 
-    stänger ner webbläsaren och återkommer vid ett senare tillfälle. Jag, personligen som användare skulle dock inte
-    vilja att "massa" data sparas ner i Local Storage. Men en lösning på det skulle kunna vara att man låter användaren
-    välja om det är ok att applikationen sparar data i Local Storage men p.ga. fokus på annat i applikationen blev den 
-    smidigaste lösningen just, Session Storage.
+    En annan lösning är t.ex. att spara ner data i Local Storage vilket har fördelen att datat finns kvar
+    även om användaren stänger ner webbläsaren och återkommer vid ett senare tillfälle.
+    Jag, personligen som användare skulle dock inte vilja att "massa" data sparas ner i Local Storage.
+    Men en lösning på det skulle kunna vara att man låter användaren välja om det är ok att applikationen sparar
+    data i Local Storage men p.ga. fokus på annat i applikationen blev den smidigaste lösningen just, Session Storage.
     
 ### Säkerhet och prestandaoptimering
 
