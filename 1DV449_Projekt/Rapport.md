@@ -123,9 +123,9 @@ Klientsida
 ### Offline-first
     Jag började med att undersöka navigator.onLine som anses vara en standardiserad lösning 
     för att undersöka om klienten är online.
-    Det visade sig dock att den inte verkar vara så säker att använda då den undersöker om datorn har någon anslutning
-    till ett nätverk. Tänk t.ex. om användaren har en anslutning till en router men den i sin tur
-    inte kan kommunicera vidare ut.
+    Det visade sig dock att den inte verkar vara så säker att använda då den undersöker
+    om datorn har någon anslutning till ett nätverk. Tänk t.ex. om användaren har en anslutning
+    till en router men den i sin tur inte kan kommunicera vidare ut.
     
     Det intressanta här är ju egentligen om man kan nå servern eller inte.
     Jag valde därför att polla min server efter en
