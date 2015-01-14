@@ -78,19 +78,20 @@ Klientsida
     Datat i Session Storage finns nämligen bara kvar så länge sessionen lever.
     
 ##### Hämtning av data
-    När data behövs hämtas görs först en koll i Session Storage om efterfrågat data finns. Om det finns skickas det ut 
-    till användaren annars görs ett anrop mot servern.
+    När data behövs hämtas görs först en koll i Session Storage om efterfrågat data finns.
+    Om det finns skickas det ut till användaren annars görs ett anrop mot servern.
     
 #### Sparande av Data
     När sidan laddas renderas tillgängliga län ut till användaren som också sparas.
     Sedan beroende på vad användaren gör för val så sparas all den data som användaren har efterfrågat
 
 #### Reflektion   
-    En annan lösning är t.ex. att spara ner data i Local Storage vilket har fördelen att datat finns kvar
-    även om användaren stänger ner webbläsaren och återkommer vid ett senare tillfälle.
+    En annan lösning är t.ex. att spara ner data i Local Storage vilket har fördelen att datat finns
+    kvar även om användaren stänger ner webbläsaren och återkommer vid ett senare tillfälle.
     Jag, personligen som användare skulle dock inte vilja att "massa" data sparas ner i Local Storage.
-    Men en lösning på det skulle kunna vara att man låter användaren välja om det är ok att applikationen sparar
-    data i Local Storage men p.ga. fokus på annat i applikationen blev den smidigaste lösningen just, Session Storage.
+    Men en lösning på det skulle kunna vara att man låter användaren välja om det är 
+    ok att applikationen sparar data i Local Storage men p.ga. fokus på annat i applikationen blev 
+    den smidigaste lösningen just, Session Storage.
     
 ### Säkerhet och prestandaoptimering
 
