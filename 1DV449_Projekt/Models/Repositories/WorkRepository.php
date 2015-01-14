@@ -67,15 +67,11 @@ class WorkRepository extends Database implements IWorkRepository  {
                 $latestUpdate = $result[0]['nextUpdate'];
                 $currentTime = time();
                 if($currentTime < $latestUpdate ){
-                    //var_dump("cache");
                     return $result;
                 }
-                //$this->remove($table);
-               // var_dump("new");
             }
 
         } catch(Exception $ex){
-           // var_dump($ex->getMessage());
         }
        return null;
     }
@@ -104,6 +100,7 @@ class WorkRepository extends Database implements IWorkRepository  {
     }
 
     /**
+     * Remove for Provinces and occupationAreas
      * @param $table string the name of the table in the db
      */
     public function remove($table)
@@ -117,19 +114,47 @@ class WorkRepository extends Database implements IWorkRepository  {
         }
     }
 
-    public function removeJobAds($jobAdId)
+    public function removeCounties($provinceId)
     {
         try{
-            $sql = "DELETE * FROM  jobads WHERE annonsid = ?";
+            $sql = "DELETE * FROM counties WHERE provinceId = ?";
+            $params = array($provinceId);
             $query = $this->db->prepare($sql);
-            $query->execute();
+            $query->execute($params);
 
         } catch(Exception $ex){
         }
     }
 
+    /**
+     * @param $jobAdId int|string the id of the job to remove
+     */
+    public function removeJobAd($jobAdId)
+    {
+        try{
+            $sql = "DELETE * FROM  jobads WHERE annonsid = ?";
+            $params = array($jobAdId);
+            $query = $this->db->prepare($sql);
+            $query->execute($params);
+
+        } catch(Exception $ex){
+        }
+    }
+
+    /**
+     * @param $countyId
+     * @param $occupationAreaId
+     */
     public function removeJobs($countyId, $occupationAreaId)
     {
-        // TODO: Implement removeJobs() method.
+        try{
+            $sql = "DELETE * FROM  jobs WHERE countyId = ? AND occupationAreaId = ?";
+            $params = array($countyId, $occupationAreaId);
+            $query = $this->db->prepare($sql);
+            $query->execute($params);
+
+        } catch(Exception $ex){
+        }
     }
+
 }

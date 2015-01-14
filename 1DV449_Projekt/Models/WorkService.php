@@ -11,7 +11,8 @@ require_once('WebServices/arbetsformedlingenWebService/IArbetsformedlingWebServi
 require_once('Repositories/WorkRepository.php');
 require_once('WebServices/arbetsformedlingenWebService/ArbetsformedlingenWebService.php');
 require_once('WebServices/IEniroWebService.php');
-require_once('Job.php');
+require_once('JobAd.php');
+require_once('CompanyInformation.php');
 
 /**
  * Class WorkService
@@ -34,13 +35,16 @@ class WorkService {
     public function getProvinces(){
         $provinces = $this->repository->find('provinces', null, null);
         if($provinces == null){
+            //delete expired data
+            $this->repository->remove("provinces");
+
             $provinces = $this->jobWebService->getProvinces();
             $provinces = json_decode($provinces, true);
             if (isset($provinces['soklista']['sokdata'])) {
                 foreach ($provinces['soklista']['sokdata'] as $key => $province) {
                     $this->repository->add('provinces', array('provinceId', 'namn', 'antal_platsannonser', 'nextUpdate'),
                         array($this->checkForTags($province['id']), $this->checkForTags($province['namn']),
-                            $this->checkForTags($province['antal_platsannonser']), strtotime("+1 hour")));
+                            $this->checkForTags($province['antal_platsannonser']), strtotime("+1 week")));
                 }
 
                 return $this->sendResponse($provinces['soklista']['sokdata']);
@@ -58,19 +62,27 @@ class WorkService {
     public function getCounties($provinceId){
         $counties = $this->repository->find('counties', 'provinceId', $provinceId);
         if($counties == null){
+            //delete expired data
+            $this->repository->removeCounties($provinceId);
+
+            //get new data
             $counties = $this->jobWebService->getCounties($provinceId);
             $counties = json_decode($counties, true);
+
+            //check if we have expected data
             if (isset($counties['soklista']['sokdata'])) {
                 foreach ($counties['soklista']['sokdata'] as $key => $county) {
+
+                    //add new data to db
                     $this->repository->add('counties', array('countyId', 'provinceId', 'namn',
                             'antal_platsannonser', 'nextUpdate'),
                         array($this->checkForTags($county['id']), $provinceId, $this->checkForTags($county['namn']),
-                            $this->checkForTags($county['antal_platsannonser']), strtotime("+1 hour")));
+                            $this->checkForTags($county['antal_platsannonser']), strtotime("+1 week")));
                 }
                 return $this->sendResponse($counties['soklista']['sokdata']);
             }
         } else {
-           return $this->sendResponse($counties);
+            return $this->sendResponse($counties);
         }
 
         return $this->sendResponse(null);
@@ -82,13 +94,20 @@ class WorkService {
     public function getOccupationAreas(){
         $occupationAreas = $this->repository->find("occupationareas", null, null);
         if($occupationAreas == null){
+            //delete expired data
+            $this->repository->remove("occupationareas");
+
             $occupationAreas = $this->jobWebService->getOccupationAreas();
+            //decodes the json so the data can be used in the code
             $occupationAreas = json_decode($occupationAreas, true);
+
+            //check if we have expected data
             if (isset($occupationAreas['soklista']['sokdata'])) {
                 foreach ($occupationAreas['soklista']['sokdata'] as $key => $occupationArea) {
+                    //add new data to db
                     $this->repository->add('occupationareas', array('occupationAreaId', 'namn', 'nextUpdate'),
                         array($this->checkForTags($occupationArea['id']),
-                            $this->checkForTags($occupationArea['namn']), strtotime("+5 minutes")));
+                            $this->checkForTags($occupationArea['namn']), strtotime("+1 week")));
                 }
                 return $this->sendResponse(($occupationAreas['soklista']['sokdata']));
             }
@@ -101,10 +120,15 @@ class WorkService {
     public function getJobs($countyId, $occupationAreaId){
         $jobs = $this->repository->findJobs($countyId, $occupationAreaId);
         if($jobs == null){
+            $this->repository->removeJobs($countyId, $occupationAreaId); //delete the expired data
+
             $jobs = $this->jobWebService->getJobs($countyId, $occupationAreaId);
-            $jobs = json_decode($jobs, true);
+            $jobs = json_decode($jobs, true); //decodes the json so the data can be used in the code
+
+            //check if we have expected data
             if (isset($jobs['matchningslista']['matchningdata'])) {
                 foreach ($jobs['matchningslista']['matchningdata'] as $key => $job) {
+                    //add new data to db
                     $this->repository->add('jobs', array('countyId', 'occupationAreaId', 'annonsrubrik',
                             'yrkesbenamning', 'annonsid', 'nextUpdate'),
                         array($countyId, $occupationAreaId, $this->checkForTags($job['annonsrubrik']),
@@ -119,104 +143,115 @@ class WorkService {
         return $this->sendResponse(null);
     }
 
-    //todo: fix this function. Looks like shit!
-    public function getJob($jobAdId){
-        $job = $this->repository->find('jobads', 'annonsid', $jobAdId);
-        if($job == null){
-            $job = ($this->jobWebService->getJob($jobAdId));
-            $job = json_decode($job, true);
+    public function getJobAd($jobAdId){
+        $jobAd = $this->repository->find('jobads', 'annonsid', $jobAdId);
+        if($jobAd == null){
+            $this->repository->removeJobAd($jobAdId); //delete the expired data
 
-            if (isset($job['platsannons']['annons']['annonsid'])) {
-                $job = new Job($this->checkForTags($job['platsannons']['annons']['annonsrubrik']),
-                    $this->checkForTags($job['platsannons']['annons']['annonstext']),
-                    $this->checkForTags($job['platsannons']['annons']['publiceraddatum']),
-                    $this->checkForTags($job['platsannons']['annons']['antal_platser']),
-                    $this->checkForTags($job['platsannons']['annons']['kommunnamn']),
-                    $this->checkForTags($job['platsannons']['arbetsplats']['arbetsplatsnamn']),
-                    $this->checkForTags($job['platsannons']['villkor']['arbetstidvaraktighet']),
-                    $this->checkForTags($job['platsannons']['villkor']['arbetstid']),
-                    $this->checkForTags($job['platsannons']['villkor']['lonetyp']),
-                    $this->checkForTags($job['platsannons']['annons']['yrkesbenamning']),
-                    $this->checkForTags($job['platsannons']['ansokan']['webbplats']),
-                    $this->checkForTags($job['platsannons']['annons']['annonsid']));
+            $jobAd = $this->jobWebService->getJob($jobAdId);
+            $jobAd = json_decode($jobAd, true); //decodes the json so the data can be used in the code
 
-                //todo: companyInformation should be an own function and table
-                $companyInformation = json_decode($this->eniroWebService->getCompanyInformation($job->getArbetsplatsnamn(),
-                    $job->getKommunnamn()), true);
-
-                if (isset($companyInformation['adverts'][0]['facebook'])) {
-                    $facebook = $companyInformation['adverts'][0]['facebook'];
-                } else {
-                    $facebook = 'saknas';
-                }
-
-                $streetName = $this->checkAddressValue($companyInformation['adverts'], 'streetName');
-                $postCode = $this->checkAddressValue($companyInformation['adverts'], 'postCode');
-                $postArea = $this->checkAddressValue($companyInformation['adverts'], 'postArea');
+            //check if we have expected data
+            if (isset($jobAd['platsannons']['annons']['annonsid'])) {
+                $jobAd = $this->createNewJob($jobAd);
+                $companyInformation = $this->getCompanyInformation($jobAd);
 
                 $this->repository->add('jobads', array('annonsrubrik', 'annonstext', 'publiceraddatum', 'antal_platser', 'kommunnamn',
                         'arbetsplatsnamn', 'arbetstidvaraktighet', 'arbetstid', 'lonetyp', 'yrkesbenamning', 'webbplats', 'annonsid',
                         'nextUpdate', 'facebook', 'streetName', 'postCode', 'postArea'),
 
-                    array($job->getAnnonsrubrik(), $job->getAnnonstext(), $job->getPubliceraddatum(), $job->getAntalPlatser(),
-                        $job->getKommunnamn(), $job->getArbetsplatsnamn(), $job->getArbetstidvaraktighet(), $job->getArbetstid(),
-                        $job->getLonetyp(), $job->getYrkesbenamning(), $job->getWebbplats(), $job->getAnnonsid(),
-                        strtotime("+1 hour"), $facebook, $streetName, $postCode, $postArea));
+                    array($jobAd->getAnnonsrubrik(), $jobAd->getAnnonstext(), $jobAd->getPubliceraddatum(), $jobAd->getAntalPlatser(),
+                        $jobAd->getKommunnamn(), $jobAd->getArbetsplatsnamn(), $jobAd->getArbetstidvaraktighet(), $jobAd->getArbetstid(),
+                        $jobAd->getLonetyp(), $jobAd->getYrkesbenamning(), $jobAd->getWebbplats(), $jobAd->getAnnonsid(),
+                        strtotime("+1 hour"), $companyInformation->getFacebook(), $companyInformation->getStreetName(),
+                        $companyInformation->getPostCode(), $companyInformation->getPostArea()));
 
-                return array(
-                    'annonsrubrik' => $job->getAnnonsrubrik(),
-                    'annonstext' => $job->getAnnonstext(),
-                    'publiceraddatum' => $job->getPubliceraddatum(),
-                    'antal_platser' => $job->getAntalPlatser(),
-                    'kommunnamn' => $job->getKommunnamn(),
-                    'arbetsplatsnamn' => $job->getArbetsplatsnamn(),
-                    'arbetstidvaraktighet' => $job->getArbetstidvaraktighet(),
-                    'arbetstid' => $job->getArbetstid(),
-                    'lonetyp' => $job->getLonetyp(),
-                    'yrkesbenamning' => $job->getYrkesbenamning(),
-                    'webbplats' => $job->getWebbplats(),
-                    'annonsid' => $job->getAnnonsid(),
-                    'facebook' => $facebook,
-                    'streetName' => $streetName,
-                    'postCode' => $postCode,
-                    'postArea' => $postArea
-                );
+                $this->returnNewJobAd($jobAd, $companyInformation);
+
             }
-
+            //nothing to return
             return $this->sendResponse(null);
 
         }
+        return $this->returnCachedJobAd($jobAd);
+    }
+
+    private function getCompanyInformation($jobAd){
+        $companyInformation = json_decode($this->eniroWebService->getCompanyInformation($jobAd->getArbetsplatsnamn(),
+            $jobAd->getKommunnamn()), true);
+
+        return $this->createNewCompanyInformation($companyInformation);
+    }
+
+    private function returnNewJobAd($jobAd, $companyInformation){
+        return array(
+            'annonsrubrik' => $jobAd->getAnnonsrubrik(),
+            'annonstext' => $jobAd->getAnnonstext(),
+            'publiceraddatum' => $jobAd->getPubliceraddatum(),
+            'antal_platser' => $jobAd->getAntalPlatser(),
+            'kommunnamn' => $jobAd->getKommunnamn(),
+            'arbetsplatsnamn' => $jobAd->getArbetsplatsnamn(),
+            'arbetstidvaraktighet' => $jobAd->getArbetstidvaraktighet(),
+            'arbetstid' => $jobAd->getArbetstid(),
+            'lonetyp' => $jobAd->getLonetyp(),
+            'yrkesbenamning' => $jobAd->getYrkesbenamning(),
+            'webbplats' => $jobAd->getWebbplats(),
+            'annonsid' => $jobAd->getAnnonsid(),
+            'facebook' => $companyInformation->getFacebook(),
+            'streetName' => $companyInformation->getStreetName(),
+            'postCode' => $companyInformation->getPostCode(),
+            'postArea' => $companyInformation->getPostArea()
+        );
+    }
+
+    private function returnCachedJobAd($jobAd){
         return
             array(
-                'annonsrubrik' => $job[0]['annonsrubrik'],
-                'annonstext' => $job[0]['annonstext'],
-                'publiceraddatum' => $job[0]['publiceraddatum'],
-                'antal_platser' => $job[0]['antal_platser'],
-                'kommunnamn' => $job[0]['kommunnamn'],
-                'arbetsplatsnamn' => $job[0]['arbetsplatsnamn'],
-                'arbetstidvaraktighet' => $job[0]['arbetstidvaraktighet'],
-                'arbetstid' => $job[0]['arbetstid'],
-                'lonetyp' => $job[0]['lonetyp'],
-                'yrkesbenamning' => $job[0]['yrkesbenamning'],
-                'webbplats' => $job[0]['webbplats'],
-                'annonsid' => $job[0]['annonsid'],
-                'facebook' => $job[0]['facebook'],
-                'streetName' => $job[0]['streetName'],
-                'postCode' => $job[0]['postCode'],
-                'postArea' => $job[0]['postArea']
+                'annonsrubrik' => $jobAd[0]['annonsrubrik'],
+                'annonstext' => $jobAd[0]['annonstext'],
+                'publiceraddatum' => $jobAd[0]['publiceraddatum'],
+                'antal_platser' => $jobAd[0]['antal_platser'],
+                'kommunnamn' => $jobAd[0]['kommunnamn'],
+                'arbetsplatsnamn' => $jobAd[0]['arbetsplatsnamn'],
+                'arbetstidvaraktighet' => $jobAd[0]['arbetstidvaraktighet'],
+                'arbetstid' => $jobAd[0]['arbetstid'],
+                'lonetyp' => $jobAd[0]['lonetyp'],
+                'yrkesbenamning' => $jobAd[0]['yrkesbenamning'],
+                'webbplats' => $jobAd[0]['webbplats'],
+                'annonsid' => $jobAd[0]['annonsid'],
+                'facebook' => $jobAd[0]['facebook'],
+                'streetName' => $jobAd[0]['streetName'],
+                'postCode' => $jobAd[0]['postCode'],
+                'postArea' => $jobAd[0]['postArea']
             );
     }
 
-    private function checkAddressValue($value, $propertyName){
-        if(isset($value[0]['address'][$propertyName])){
-            return $value[0]['address'][$propertyName];
-        }
-        return 'saknas';
+    private function createNewCompanyInformation($companyInformation){
+        return new CompanyInformation($this->checkForTags($companyInformation['adverts'][0]['facebook']),
+            $this->checkForTags($companyInformation['adverts']['postArea']),
+            $this->checkForTags($companyInformation['adverts']['postCode']),
+            $this->checkForTags($companyInformation['adverts']['streetName']));
+    }
+
+    private function createNewJob($job){
+        return new JobAd($this->checkForTags($job['platsannons']['annons']['annonsrubrik']),
+            $this->checkForTags($job['platsannons']['annons']['annonstext']),
+            $this->checkForTags($job['platsannons']['annons']['publiceraddatum']),
+            $this->checkForTags($job['platsannons']['annons']['antal_platser']),
+            $this->checkForTags($job['platsannons']['annons']['kommunnamn']),
+            $this->checkForTags($job['platsannons']['arbetsplats']['arbetsplatsnamn']),
+            $this->checkForTags($job['platsannons']['villkor']['arbetstidvaraktighet']),
+            $this->checkForTags($job['platsannons']['villkor']['arbetstid']),
+            $this->checkForTags($job['platsannons']['villkor']['lonetyp']),
+            $this->checkForTags($job['platsannons']['annons']['yrkesbenamning']),
+            $this->checkForTags($job['platsannons']['ansokan']['webbplats']),
+            $this->checkForTags($job['platsannons']['annons']['annonsid']));
     }
 
     private function checkForTags($value){
+        //check if the value exists
         if (isset($value)) {
-            return strip_tags($value);
+            return strip_tags($value); //remove tags
         }
         return "saknas";
     }
@@ -232,7 +267,7 @@ class WorkService {
                 'error' => true
             );
         } else{
-           return $response;
+            return $response;
         }
     }
 

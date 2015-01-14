@@ -6,7 +6,7 @@
  * Time: 19:13
  */
 
-class Job{
+class JobAd{
     private $annonsrubrik;
     private $annonstext;
     private $publiceraddatum;
