@@ -3,11 +3,11 @@
 ### Inledning
 
     Under projekttiden har jag utvecklat en applikation som jag har valt att kalla för Jobbsök.
-    Idén till den här applikationen fick jag när jag var inne på Arbetsförmedlingen och skulle söka efter lediga jobb på skojs skull
-    men tyckte då att det var krångligt och allmänt bökigt. 
+    Idén till den här applikationen fick jag när jag var inne på Arbetsförmedlingen och skulle 
+    söka efter lediga jobb på skojs skull men tyckte då att det var krångligt och allmänt bökigt. 
      
-    Jag ville skapa en användarvänlig applikation där användaren på ett enkelt sätt skulle kunna söka efter lediga jobb och 
-    få reda på mer information om företaget genom att använda Eniros API.
+    Jag ville skapa en användarvänlig applikation där användaren på ett enkelt sätt skulle kunna 
+    söka efter lediga jobb och få reda på mer information om företaget genom att använda Eniros API.
     
 #### Liknande Applikationer
 [Jobbsafari](http://www.jobbsafari.se/)
@@ -19,16 +19,18 @@ Schematisk Bild
 
 Serversida
 -----------
-    På serversidan har jag valt PHP som programmeringsspråk då det känndes som ett lämpligt språk för det här projektet med tanke på
-    tidigare erfarenheter. Jag kände också att jag ville utveckla min kunskap inom PHP för att bli bättre på att behärska språket.
-    Jag har använt mig av ett template-ramverk för att rendera ut HTML-koden dels för att det blir mycket snyggare och enklare 
-    men också för att testa på något nytt som man har nytta för i framtiden.
+    På serversidan har jag valt PHP som programmeringsspråk då det känndes som ett lämpligt språk för 
+    det här projektet med tanke på tidigare erfarenheter. Jag kände också att jag ville utveckla min 
+    kunskap inom PHP för att bli bättre på att behärska språket.
+    Jag har använt mig av ett template-ramverk för att rendera ut HTML-koden dels för att det blir mycket
+    snyggare och enklare men också för att testa på något nytt som man har nytta för i framtiden.
     
 ### API-Anrop
     Klienten gör ajax-anrop mot servern och skickar med nödvänig data.
-    Controllern fångar upp ajax-anropet och med hjälp av medskickad data bestäms vilken funktion i webservicen som skall köras.
-    Jag har två webserivce-klasser, en för Arbetsförmedlingen och en för Eniro. I dessa klasserna använder jag mig av
-    ett bibliotek som heter Requests för att göra http-anrop mot API:erna
+    Controllern fångar upp ajax-anropet och med hjälp av medskickad data
+     bestäms vilken funktion i webservicen som skall köras.
+    Jag har två webserivce-klasser, en för Arbetsförmedlingen och en för Eniro.
+    I dessa klasserna använder jag mig av ett bibliotek som heter Requests för att göra http-anrop mot API:erna
     om API:et svarar returneras det svaret, annars null.
     
 ### Cachning
@@ -140,6 +142,7 @@ Klientsida
 ### Betygshöjande
 
  * Responsiv desing som anpassar sig efter olika enheter.
+ * Användarvänligt
  * Användning av templates för att bryta ut HTML-koden från PHP. Det är även något jag inte har prvoat på innan.
  * Testbar kod
     * Serversidan
@@ -151,7 +154,22 @@ Klientsida
  * Kodkvalitén överlag håller ett bra mått
  
 ### Reflektion
+
+    Projektet har överlag gått bra även om jag har gjort det lite svårt för mig ibland. I databasen har
+    jag fem tabeller och jag hade en tanke om att bara ha ett repository innehållandes endast en find, add
+    och remove men detta visade sig bli mycket krångligt och inte alls lika rent som jag hade tänkt mig.
+    Lyckades inte uppnå det helt heller utan jag borde haft en klass för varje tabell istället.
+    
+    I början hade jag även massa tankar om testdrivet arbete både på klientsidan och serversidan men insåg snart
+    att det skulle vara omöjligt att hinna med då jag aldrig ens har provat på att göra tester först och
+    sedan kod och att jag hade ett projekt till att göra. Lägg därpå till jul och nyårsfirande och
+    det blir inte mycket tid kvar.
+    
+    Jag hade även tankar om man skulle kunna söka jobb efter sökord och sedan även kunna filtrera ut de
+    datat men det har det verkligen inte funnits tid för. 
     
     
-Egen reflektion kring projektet: Här tar du upp hur projektet har gått. Vilka eventuella problem har du stött på? Finns det funktioner som du velat implementera men inte hunnit? Hur skulle du vilja jobba vidare med din applikation?
-Skriv också om de eventuella delar du anser vara betygshöjande med din applikation. Motivera varför du anser dessa vara betygshöjande.
+    Jag är trots detta någorlunda nöjd med projektets resultat och applikationen känns stabil och 
+    designen känns användarevänlig. Om jag hade tagit lite mindre ledigt under jul hade det förmodligen
+    blivit bättre kod som tyvärr har blivit lite lidande....
+    
