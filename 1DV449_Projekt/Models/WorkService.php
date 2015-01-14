@@ -13,6 +13,7 @@ require_once('WebServices/arbetsformedlingenWebService/ArbetsformedlingenWebServ
 require_once('WebServices/IEniroWebService.php');
 require_once('JobAd.php');
 require_once('CompanyInformation.php');
+require_once('Job.php');
 
 /**
  * Class WorkService
@@ -117,9 +118,10 @@ class WorkService {
         return $this->sendResponse(null);
     }
 
-    public function getJobs($countyId, $occupationAreaId){
+    public function getJobs($countyId, $occupationAreaId)
+    {
         $jobs = $this->repository->findJobs($countyId, $occupationAreaId);
-        if($jobs == null){
+        if ($jobs == null) {
             $this->repository->removeJobs($countyId, $occupationAreaId); //delete the expired data
 
             $jobs = $this->jobWebService->getJobs($countyId, $occupationAreaId);
@@ -128,19 +130,26 @@ class WorkService {
             //check if we have expected data
             if (isset($jobs['matchningslista']['matchningdata'])) {
                 foreach ($jobs['matchningslista']['matchningdata'] as $key => $job) {
+                    $job = $this->createNewJob($job);
                     //add new data to db
                     $this->repository->add('jobs', array('countyId', 'occupationAreaId', 'annonsrubrik',
                             'yrkesbenamning', 'annonsid', 'nextUpdate'),
-                        array($countyId, $occupationAreaId, $this->checkForTags($job['annonsrubrik']),
-                            $this->checkForTags($job['yrkesbenamning']),
-                            $this->checkForTags($job['annonsid']), strtotime("+1 hour")));
+                        array($countyId, $occupationAreaId, $job->getJobHeader(), $job->getJobAdId(),
+                            $job->getJobName(), strtotime("+1 hour")));
                 }
                 return $this->sendResponse($jobs['matchningslista']['matchningdata']);
+
+            } else {
+                return $this->sendResponse(null);
+
             }
-        } else {
-            return $this->sendResponse($jobs);
         }
-        return $this->sendResponse(null);
+        return $this->sendResponse($jobs);
+    }
+
+    private function createNewJob($job){
+        return new Job($this->checkForTags($job['annonsid']), $this->checkForTags($job['annonsrubrik']),
+            $this->checkForTags($job['yrkesbenamning']));
     }
 
     public function getJobAd($jobAdId){
@@ -153,7 +162,7 @@ class WorkService {
 
             //check if we have expected data
             if (isset($jobAd['platsannons']['annons']['annonsid'])) {
-                $jobAd = $this->createNewJob($jobAd);
+                $jobAd = $this->createNewJobAd($jobAd);
                 $companyInformation = $this->getCompanyInformation($jobAd);
 
                 $this->repository->add('jobads', array('annonsrubrik', 'annonstext', 'publiceraddatum', 'antal_platser', 'kommunnamn',
@@ -166,7 +175,7 @@ class WorkService {
                         strtotime("+1 hour"), $companyInformation->getFacebook(), $companyInformation->getStreetName(),
                         $companyInformation->getPostCode(), $companyInformation->getPostArea()));
 
-                $this->returnNewJobAd($jobAd, $companyInformation);
+                return $this->returnNewJobAd($jobAd, $companyInformation);
 
             }
             //nothing to return
@@ -228,12 +237,12 @@ class WorkService {
 
     private function createNewCompanyInformation($companyInformation){
         return new CompanyInformation($this->checkForTags($companyInformation['adverts'][0]['facebook']),
-            $this->checkForTags($companyInformation['adverts']['postArea']),
-            $this->checkForTags($companyInformation['adverts']['postCode']),
-            $this->checkForTags($companyInformation['adverts']['streetName']));
+            $this->checkForTags($companyInformation['adverts'][0]['address']['postArea']),
+            $this->checkForTags($companyInformation['adverts'][0]['address']['postCode']),
+            $this->checkForTags($companyInformation['adverts'][0]['address']['streetName']));
     }
 
-    private function createNewJob($job){
+    private function createNewJobAd($job){
         return new JobAd($this->checkForTags($job['platsannons']['annons']['annonsrubrik']),
             $this->checkForTags($job['platsannons']['annons']['annonstext']),
             $this->checkForTags($job['platsannons']['annons']['publiceraddatum']),

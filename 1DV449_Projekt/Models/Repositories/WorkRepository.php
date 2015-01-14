@@ -117,7 +117,7 @@ class WorkRepository extends Database implements IWorkRepository  {
     public function removeCounties($provinceId)
     {
         try{
-            $sql = "DELETE * FROM counties WHERE provinceId = ?";
+            $sql = "DELETE  FROM counties WHERE provinceId = ?";
             $params = array($provinceId);
             $query = $this->db->prepare($sql);
             $query->execute($params);
@@ -132,12 +132,13 @@ class WorkRepository extends Database implements IWorkRepository  {
     public function removeJobAd($jobAdId)
     {
         try{
-            $sql = "DELETE * FROM  jobads WHERE annonsid = ?";
+            $sql = "DELETE FROM jobads WHERE annonsid = ?";
             $params = array($jobAdId);
             $query = $this->db->prepare($sql);
             $query->execute($params);
 
         } catch(Exception $ex){
+            $message =$ex->getMessage();
         }
     }
 
@@ -148,7 +149,7 @@ class WorkRepository extends Database implements IWorkRepository  {
     public function removeJobs($countyId, $occupationAreaId)
     {
         try{
-            $sql = "DELETE * FROM  jobs WHERE countyId = ? AND occupationAreaId = ?";
+            $sql = "DELETE FROM  jobs WHERE countyId = ? AND occupationAreaId = ?";
             $params = array($countyId, $occupationAreaId);
             $query = $this->db->prepare($sql);
             $query->execute($params);
