@@ -139,8 +139,8 @@ Klientsida
     Om det inte finns några jobb presenteras det man inte har visat några jobb innan och att man får
     vänta tills anslutningen har återupprättats. 
     
-    Om Servern svarar igen och man tittar på ett jobb i offline-läge behålls den sidan och en box renderas att man har
-    anslutning igen och kan göra nya sökningar.
+    Om Servern svarar igen och man tittar på ett jobb i offline-läge behålls den sidan och
+    en box renderas att man har anslutning igen och kan göra nya sökningar.
     
 ### Risker med min applikation
 
