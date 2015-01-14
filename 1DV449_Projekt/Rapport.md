@@ -105,7 +105,8 @@ Klientsida
 #### Jag anävnder mig CDN när jag länkar in Bootsraps css-filer och JQuery.
     
 * Filerna hämtas från en annan server än ens egna.
-* Om användaren t.ex. redan har besökt en sida som använder sig av dessa filer så behöves de inte hämtas igen då dom redan finns i användarens cache.
+* Om användaren t.ex. redan har besökt en sida som använder sig av dessa filer så behöves de inte hämtas
+  igen då dom redan finns i användarens cache.
 * CDN tillåter även browsern att ladda in flera filer samtidigt.
 
 #### Minifiering och obfuskering
@@ -119,19 +120,23 @@ Klientsida
  * Jag har gjort ett cache manifest där statiska filer länkas in så de sparas i appcachen och slipper hämtas från servern.
  
 ### Offline-first
-    Jag började med att undersöka navigator.onLine som anses vara en standardiserad lösning för att undersöka om klienten är online.
+    Jag började med att undersöka navigator.onLine som anses vara en standardiserad lösning 
+    för att undersöka om klienten är online.
     Det visade sig dock att den inte verkar vara så säker att använda då den undersöker om datorn har någon anslutning
-    till ett nätverk. Tänk t.ex. om användaren har en anslutning till en router men den i sin tur inte kan kommunicera vidare ut.
+    till ett nätverk. Tänk t.ex. om användaren har en anslutning till en router men den i sin tur
+    inte kan kommunicera vidare ut.
     
-    Det intressanta här är ju egentligen om man kan nå servern eller inte. Jag valde därför att polla min server efter en
-    mycket liten JSON-fil var tredje sekund. Om klienten inte får något svar på tre sekunder anses klienten var offline och 
+    Det intressanta här är ju egentligen om man kan nå servern eller inte.
+    Jag valde därför att polla min server efter en
+    mycket liten JSON-fil var tredje sekund.
+    Om klienten inte får något svar på tre sekunder anses klienten var offline och 
     applikation hamnar då i offline-läge.
     
-    I offline-läget kollas det om det finns några jobb sparade Session Storage om det finns visas en lista på dessa jobb som
-    man kan klicka sig in på och man ser då mer information om valt jobb. 
+    I offline-läget kollas det om det finns några jobb sparade Session Storage om det finns
+    visas en lista på dessa jobb som man kan klicka sig in på och man ser då mer information om valt jobb. 
     
-    Om det inte finns några jobb presenteras det man inte har visat några jobb innan och att man får vänta tills anslutningen
-    har återupprättats. 
+    Om det inte finns några jobb presenteras det man inte har visat några jobb innan och att man får
+    vänta tills anslutningen har återupprättats. 
     
     Om Servern svarar igen och man tittar på ett jobb i offline-läge behålls den sidan och en box renderas att man har
     anslutning igen och kan göra nya sökningar.
