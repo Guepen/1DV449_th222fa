@@ -18,6 +18,11 @@ var JobBoard = {
             $("#tips").remove();
         });
 
+        var cachedJobs = JobBoard.storage.getItem("offlineJobs");
+
+        if (cachedJobs) {
+            JobBoard.offlineJobs = JSON.parse(cachedJobs);
+        }
         //sets an interval to check if the server i available
         setInterval(function(){
             JobBoard.checkConnection();
@@ -61,6 +66,7 @@ var JobBoard = {
         if (JobBoard.online === false) {
             JobBoard.online = true;
             $("#offlineContent").remove();
+            $("#back").remove();
 
             $("<div id='onlineContent' class='row'><div class='col-md-12'><div id='online' class='alert alert-success'>" +
             "</div></div></div>").insertBefore(".jumbotron");
@@ -78,7 +84,6 @@ var JobBoard = {
     },
 
     offlineAlert: function(){
-        $("#content").empty();
         $("#tips").remove();
         $("<div id='offlineContent' class='row'><div class='col-md-12'><div id='offline' class='alert alert-warning'>" +
         "<a href='#' class='close' data-dismiss='alert'>&times;</a></div></div></div>").insertBefore(".jumbotron");
@@ -92,12 +97,13 @@ var JobBoard = {
     },
 
     offlineJobList: function(){
-        var jobAdsList = JSON.parse(this.storage.getItem("jobAds"));
+        $("#content").empty();
+        var jobAdsList = JSON.parse(this.storage.getItem("offlineJobs"));
         if (jobAdsList) {
             jobAdsList.forEach(function (jobAdId) {
-                var jobAd = JSON.parse(sessionStorage.getItem(jobAdId));
+                var jobAd = JSON.parse(sessionStorage.getItem("jobAd"+jobAdId));
 
-                var job = new Job(jobAdId, jobAd.header, jobAd.jobName);
+                var job = new Job(jobAd.id, jobAd.header, jobAd.jobName);
                 job.render();
             });
 
@@ -113,14 +119,21 @@ var JobBoard = {
 
     renderChosenOfflineJob: function(jobAdId){
         $("#content").empty();
-        var cachedJobAd = JSON.parse(sessionStorage.getItem(jobAdId));
-        var newJobAd = new JobAd(cachedJobAd.header, cachedJobAd.jobText, cachedJobAd.published,
-            cachedJobAd.numberOfJobs, cachedJobAd.countyName, cachedJobAd.workLocationName, cachedJobAd.duration,
-            cachedJobAd.workHours, cachedJobAd.salaryType, cachedJobAd.jobName, cachedJobAd.website,
-            cachedJobAd.facebook, cachedJobAd.streetName, cachedJobAd.postCode, cachedJobAd.postArea);
-        newJobAd.render();
+        var cachedJobAd = JSON.parse(sessionStorage.getItem("jobAd"+jobAdId));
+        if (cachedJobAd) {
+            var newJobAd = new JobAd(cachedJobAd.id, cachedJobAd.header, cachedJobAd.jobText, cachedJobAd.published,
+                cachedJobAd.numberOfJobs, cachedJobAd.countyName, cachedJobAd.workLocationName, cachedJobAd.duration,
+                cachedJobAd.workHours, cachedJobAd.salaryType, cachedJobAd.jobName, cachedJobAd.website,
+                cachedJobAd.facebook, cachedJobAd.streetName, cachedJobAd.postCode, cachedJobAd.postArea);
+            newJobAd.render();
+        } else{
+            var error = new CustomError("Ett fel inträffade när valt jobb skulle hämtas",
+                "var vänlig vänta på att du återfår din internetanslutning och gör sedan en ny sökning");
+            error.render();
+        }
 
     },
+
     renderSearchView: function(){
         JobBoard.jobList = [];
         //provinces
@@ -435,7 +448,7 @@ var JobBoard = {
                     }
 
                     if (data) {
-                        var jobAd = new JobAd(data.annonsrubrik, data.annonstext, data.publiceraddatum, data.antal_platser,
+                        var jobAd = new JobAd(jobAdId, data.annonsrubrik, data.annonstext, data.publiceraddatum, data.antal_platser,
                             data.kommunnamn, data.arbetsplatsnamn, data.arbetstidvaraktighet, data.arbetstid, data.lonetyp, data.yrkesbenamning,
                             data.webbplats, data.facebook, data.streetName, data.postCode, data.postArea);
                         JobBoard.jobAd.push(jobAd);

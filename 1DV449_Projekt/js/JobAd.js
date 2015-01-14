@@ -3,6 +3,7 @@
  */
 
 /**
+ * @param id
  * @param header
  * @param jobText
  * @param published
@@ -20,9 +21,10 @@
  * @param postArea
  * @constructor
  */
-function JobAd(header, jobText, published, numberOfJobs, countyName, workLocationName, duration, workHours, salaryType,
+function JobAd(id ,header, jobText, published, numberOfJobs, countyName, workLocationName, duration, workHours, salaryType,
                jobName, website, facebook, streetName, postCode, postArea){
 
+    this.id = id;
     this.header = header;
     this.jobText = jobText;
     this.published = new Date(published);
@@ -47,9 +49,13 @@ function JobAd(header, jobText, published, numberOfJobs, countyName, workLocatio
 JobAd.prototype.render = function(){
     var website;
 
-    var backLink = $("<a href='#'>Tillbaka till sökresultatet</a>").appendTo("#content");
+    var backLink = $("<a id='back' href='#'>Tillbaka till sökresultatet</a>").appendTo("#content");
     backLink.click(function(){
-       JobBoard.renderJobList();
+        if (JobBoard.online) {
+            JobBoard.renderJobList();
+        } else{
+            JobBoard.offlineJobList();
+        }
     });
 
     var panel = $("<div class='panel panel-success'></div>").appendTo("#content");

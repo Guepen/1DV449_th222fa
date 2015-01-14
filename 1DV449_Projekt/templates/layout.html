@@ -14,33 +14,38 @@
     <div class="row">
         <div class="col-md-12">
             <div class="page-header">
-                <div class="col-md-3 pull-right">
-                    <div class="alert alert-info">
-                        <p id="status"> Inte Inloggad med Facebook</p>
-                        <p></p>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1>Jobbsök <small>Vi hjälper dig att hitta ditt nya jobb!</small></h1>
                     </div>
                 </div>
-                <h1>Jobbsök <small>Vi hjälper dig att hitta ditt nya jobb!</small></h1>
-                <div id="fb-root"></div>
-                <div class="fb-share-button" data-href="//jobbsok.tobias-holst.se/" data-layout="button"></div>
-                <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
-                </fb:login-button>
+                <div class="row">
+                    <div class="col-md-9">
+                        <div id="fb-root"></div>
+                        <div class="fb-share-button" data-href="//jobbsok.tobias-holst.se/" data-layout="button"></div>
+                        <fb:login-button scope="public_profile,email" onlogin="checkLoginState();">
+                        </fb:login-button>
+                    </div>
 
+                    <div class="col-md-3">
+                        <div class="alert alert-info">
+                            <p id="status"> Inte Inloggad med Facebook</p>
+                            <p></p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     {% block content %}
     {% endblock %}
-    <footer class='row'>
-        <div class='col-md-12'>
-            <div class="col-md-8">
-                <h3><small>Producerad av <a href='//tobias-holst.se/' target='_blank'>@Tobias Holst</a></small></h3>
+    <footer>
+        <div class='container'>
+                <p class="muted credit">Producerad av <a href='//tobias-holst.se/' target='_blank'>@Tobias Holst</a></p>
+                <p class="muted credit">Jobbdatan är hämtad från
+                    <a target="_blank" href="//www.arbetsformedlingen.se/">Arbetsförmedlingens</a>
+                    öppna API</p>
             </div>
-            <div class="col-md 4">
-                <p>Datan är hämtad från Arbetsförmedlingens öppna API</p>
-            </div>
-            <p class='lead'></p>
-        </div>
     </footer>
 </div>
 <script src="js/FacebookOAuth.js"></script>
