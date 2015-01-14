@@ -14,6 +14,9 @@ require_once('WebServices/IEniroWebService.php');
 require_once('JobAd.php');
 require_once('CompanyInformation.php');
 require_once('Job.php');
+require_once('Province.php');
+require_once('County.php');
+require_once('OccupationArea.php');
 
 /**
  * Class WorkService
@@ -43,17 +46,22 @@ class WorkService {
             $provinces = json_decode($provinces, true);
             if (isset($provinces['soklista']['sokdata'])) {
                 foreach ($provinces['soklista']['sokdata'] as $key => $province) {
-                    $this->repository->add('provinces', array('provinceId', 'namn', 'antal_platsannonser', 'nextUpdate'),
-                        array($this->checkForTags($province['id']), $this->checkForTags($province['namn']),
-                            $this->checkForTags($province['antal_platsannonser']), strtotime("+1 week")));
+                    $province = $this->createNewProvince($province);
+                    $this->repository->add('provinces', array('provinceId', 'namn', 'nextUpdate'),
+                        array($province->getId(), $province->getName(), strtotime("+1 week")));
                 }
 
                 return $this->sendResponse($provinces['soklista']['sokdata']);
             }
+            //nothing to return
+            return $this->sendResponse(null);
         } else {
             return $this->sendResponse($provinces);
         }
-        return $this->sendResponse(null);
+    }
+
+    private function createNewProvince($province){
+        return new Province($this->checkForTags($province['id']),$this->checkForTags($province['namn']));
     }
 
     /**
@@ -73,20 +81,24 @@ class WorkService {
             //check if we have expected data
             if (isset($counties['soklista']['sokdata'])) {
                 foreach ($counties['soklista']['sokdata'] as $key => $county) {
-
+                    $county = $this->createNewCounty($county);
                     //add new data to db
-                    $this->repository->add('counties', array('countyId', 'provinceId', 'namn',
-                            'antal_platsannonser', 'nextUpdate'),
-                        array($this->checkForTags($county['id']), $provinceId, $this->checkForTags($county['namn']),
-                            $this->checkForTags($county['antal_platsannonser']), strtotime("+1 week")));
+                    $this->repository->add('counties', array('countyId', 'provinceId', 'namn', 'nextUpdate'),
+                        array($county->getId(), $provinceId, $county->getName(), strtotime("+1 week")));
                 }
                 return $this->sendResponse($counties['soklista']['sokdata']);
             }
+            //nothing to return
+            return $this->sendResponse(null);
+
         } else {
             return $this->sendResponse($counties);
         }
 
-        return $this->sendResponse(null);
+    }
+
+    private function createNewCounty($county){
+        return new County($this->checkForTags($county['id']),$this->checkForTags($county['namn']));
     }
 
     /**
@@ -105,10 +117,10 @@ class WorkService {
             //check if we have expected data
             if (isset($occupationAreas['soklista']['sokdata'])) {
                 foreach ($occupationAreas['soklista']['sokdata'] as $key => $occupationArea) {
+                    $occupationArea = $this->createNewOccupationArea($occupationArea);
                     //add new data to db
                     $this->repository->add('occupationareas', array('occupationAreaId', 'namn', 'nextUpdate'),
-                        array($this->checkForTags($occupationArea['id']),
-                            $this->checkForTags($occupationArea['namn']), strtotime("+1 week")));
+                        array($occupationArea->getId(), $occupationArea->getName(), strtotime("+1 week")));
                 }
                 return $this->sendResponse(($occupationAreas['soklista']['sokdata']));
             }
@@ -116,6 +128,10 @@ class WorkService {
             return $this->sendResponse($occupationAreas);
         }
         return $this->sendResponse(null);
+    }
+
+    private function createNewOccupationArea($occupationArea){
+        return new OccupationArea($this->checkForTags($occupationArea['id']),$this->checkForTags($occupationArea['namn']));
     }
 
     public function getJobs($countyId, $occupationAreaId)

@@ -138,7 +138,6 @@ class WorkRepository extends Database implements IWorkRepository  {
             $query->execute($params);
 
         } catch(Exception $ex){
-            $message =$ex->getMessage();
         }
     }
 
