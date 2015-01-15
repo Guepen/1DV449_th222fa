@@ -16,7 +16,7 @@ require_once('CompanyInformation.php');
 require_once('Job.php');
 require_once('Province.php');
 require_once('County.php');
-require_once('OccupationArea.php');
+require_once('occupationArea.php');
 
 /**
  * Class WorkService

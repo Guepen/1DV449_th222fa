@@ -58,7 +58,7 @@ var JobBoard = {
 
     addToSessionStorage: function(key, value){
         if (JobBoard.supportsSessionStorage()) {
-            sessionStorage.setItem(key, JSON.stringify(value));
+            this.storage.setItem(key, JSON.stringify(value));
         }
     },
 
@@ -85,6 +85,7 @@ var JobBoard = {
 
     offlineAlert: function(){
         $("#tips").remove();
+        $("#onlineContent").remove();
         $("<div id='offlineContent' class='row'><div class='col-md-12'><div id='offline' class='alert alert-warning'>" +
         "<a href='#' class='close' data-dismiss='alert'>&times;</a></div></div></div>").insertBefore(".jumbotron");
         $("<h3>Det verkar som du har tappat din internetanslutning" +
@@ -98,10 +99,11 @@ var JobBoard = {
 
     offlineJobList: function(){
         $("#content").empty();
+        var that = this;
         var jobAdsList = JSON.parse(this.storage.getItem("offlineJobs"));
         if (jobAdsList) {
             jobAdsList.forEach(function (jobAdId) {
-                var jobAd = JSON.parse(sessionStorage.getItem("jobAd"+jobAdId));
+                var jobAd = JSON.parse(that.storage.getItem("jobAd"+jobAdId));
 
                 var job = new Job(jobAd.id, jobAd.header, jobAd.jobName);
                 job.render();
@@ -119,7 +121,7 @@ var JobBoard = {
 
     renderChosenOfflineJob: function(jobAdId){
         $("#content").empty();
-        var cachedJobAd = JSON.parse(sessionStorage.getItem("jobAd"+jobAdId));
+        var cachedJobAd = JSON.parse(this.storage.getItem("jobAd"+jobAdId));
         if (cachedJobAd) {
             var newJobAd = new JobAd(cachedJobAd.id, cachedJobAd.header, cachedJobAd.jobText, cachedJobAd.published,
                 cachedJobAd.numberOfJobs, cachedJobAd.countyName, cachedJobAd.workLocationName, cachedJobAd.duration,
@@ -180,12 +182,12 @@ var JobBoard = {
                 "dataType": "json",
                 "data": {"mode": "getProvinces"},
                 success: function (data) {
-                    var id;
-                    var provincesList = [];
                     if (data.error) {
                         this.error();
                         return false;
                     }
+                    var id;
+                    var provincesList = [];
                     var provinces = (data);
                     provinces.forEach(function (province) {
                         if (province.provinceId == undefined) {
@@ -197,7 +199,7 @@ var JobBoard = {
                         provincesList.push(newProvince);
                         newProvince.render();
                     });
-                    that.storage.setItem("provinces", JSON.stringify(provincesList))
+                    that.addToSessionStorage("provinces", provincesList);
 
                 },
 
@@ -256,7 +258,7 @@ var JobBoard = {
                             countyList.push(newCounty);
                             newCounty.render();
                         });
-                        that.storage.setItem("counties"+provinceId, JSON.stringify(countyList));
+                        that.addToSessionStorage("counties"+provinceId, countyList);
                     }
                 },
 
@@ -314,7 +316,7 @@ var JobBoard = {
                             occupationAreaList.push(newOccupationArea);
                             newOccupationArea.render();
                         });
-                        that.storage.setItem("occupationAreas", JSON.stringify(occupationAreaList));
+                        that.addToSessionStorage("occupationAreas", occupationAreaList);
                     }
                 },
 
@@ -376,13 +378,12 @@ var JobBoard = {
                     }
                     if (data.length > 0) {
                         data.forEach(function (job) {
-                            console.log(job);
                             var newJob = new Job(job.annonsid, job.annonsrubrik, job.yrkesbenamning);
                             jobList.push(newJob);
                             that.jobList.push(newJob);
                             newJob.render();
                         });
-                        that.storage.setItem("jobs"+occupationAreaId+countyId, JSON.stringify(jobList));
+                        that.addToSessionStorage("jobs"+occupationAreaId+countyId, jobList);
                     }
                 },
 
@@ -455,8 +456,8 @@ var JobBoard = {
                         JobBoard.jobAd.push(jobAd);
                         jobAd.render();
                         that.offlineJobs.push(jobAdId);
-                        that.storage.setItem('jobAd'+jobAdId, JSON.stringify(jobAd));
-                        that.storage.setItem("offlineJobs", JSON.stringify(that.offlineJobs));
+                        that.addToSessionStorage('jobAd'+jobAdId, jobAd);
+                        that.addToSessionStorage("offlineJobs", that.offlineJobs);
                     }
                 },
 

@@ -26,7 +26,6 @@ County.prototype.render = function(){
     countyLink.click(function(){
         if (JobBoard.online) {
             $("#occupationsList").empty();
-            console.log(that.countyId);
             JobBoard.searchQueries.countyId = that.countyId;
             JobBoard.getOccupationAreas();
             $("#counties").removeClass("panel-warning").addClass("panel panel-success");

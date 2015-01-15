@@ -43,7 +43,6 @@ function JobAd(id ,header, jobText, published, numberOfJobs, countyName, workLoc
 }
 
 /**
- * todo: fix this function. Looking like shit
  * renders the jobAd
  */
 JobAd.prototype.render = function(){
@@ -72,11 +71,11 @@ JobAd.prototype.getBody = function(){
 };
 
 JobAd.prototype.getFooter = function(){
-    return  $("<div class='col-md-5'><p class='text'> <b>antal platser: </b> "+ this.numberOfJobs + "</p>" +
+    return  $("<div class='col-md-6'><p class='text'> <b>antal platser: </b> "+ this.numberOfJobs + "</p>" +
     "<p class='text'><b>Varaktighet: </b>" + this.duration + "</p>" +
     "<p class='text'><b>Arbetstid: </b>" + this.workHours + "</p>" +
     "<p class='text'><b>Lön: </b>" + this.salaryType + "</p></div>" +
-    "<div class='col-md-5'><p class='text'><b>Arbetsgivare: </b>" + this.workLocationName + "</p>"+
+    "<div class='col-md-6'><p class='text'><b>Arbetsgivare: </b>" + this.workLocationName + "</p>"+
         this.getAddress() +  this.getFacebook() + this.getWebSite() +"</div>");
 
 };
@@ -86,8 +85,8 @@ JobAd.prototype.getAddress = function(){
         return "";
 
     } else{
-        return "<p class='text'><b>Adress</b>" + this.streetName + "</p>" +
-        "<p class='text'><b>Postnummmer</b>" + this.postCode + "</p><p class='text'><b>Ort</b>" + this.postArea + "</p>";
+        return "<p class='text'><b>Adress:</b> " + this.streetName + "</p>" +
+        "<p class='text'><b>Postnummmer:</b> " + this.postCode + "</p><p class='text'><b>Ort:</b> " + this.postArea + "</p>";
     }
 };
 
@@ -122,7 +121,7 @@ JobAd.prototype.getFacebook = function(){
             case 'Inloggad':
                 return "<a target='_blank' href=" + this.facebook + "> Arbetsgivarens facebook </a>";
             default:
-                return "<p class='text'>Var vänlig att logga in med facebook för att se arbetsgivarens facebook</p>";
+                return "<h4>Var vänlig att logga in med facebook för att se arbetsgivarens facebook</h4>";
         }
     }
     return "";
@@ -134,5 +133,5 @@ JobAd.prototype.getFacebook = function(){
  * @returns {string} a nice looking date
  */
 JobAd.prototype.getPublishedDate = function(){
-    return this.published.getFullYear() + "-" + this.published.getMonth() + 1 + "-" + this.published.getDate();
+    return this.published.getFullYear() + "-" + (this.published.getMonth() + 1) + "-" + this.published.getDate();
 };

@@ -40,22 +40,17 @@
     {% block content %}
     {% endblock %}
     <footer>
-        <div class='container'>
-                <p class="muted credit">Producerad av <a href='//tobias-holst.se/' target='_blank'>@Tobias Holst</a></p>
-                <p class="muted credit">Jobbdatan är hämtad från
+        <div class='row'>
+            <div class="col-md-12">
+                <p class="text-muted credit">Jobbdatan är hämtad från
                     <a target="_blank" href="//www.arbetsformedlingen.se/">Arbetsförmedlingens</a>
-                    öppna API</p>
+                    öppna API och företagsdatan är hämtad från <a target="_blank" href="//www.eniro.se/">Eniro</a></p>
+                <p class="text-muted credit">Producerad av <a href='//tobias-holst.se/' target='_blank'>@Tobias Holst</a></p>
             </div>
+        </div>
     </footer>
 </div>
-<script src="js/FacebookOAuth.js"></script>
-<script src="js/Province.js"></script>
-<script src="js/Error.js"></script>
-<script src="js/OccupationArea.js"></script>
-<script src="js/Job.js"></script>
-<script src="js/JobAd.js"></script>
-<script src="js/County.js"></script>
-<script src="js/JobBoard.js"></script>
 <script src='//code.jquery.com/jquery-1.11.0.min.js'></script>
+<script src="js/app.min.js"></script>
 </body>
 </html>

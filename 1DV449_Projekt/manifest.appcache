@@ -1,13 +1,6 @@
 CACHE MANIFEST
 css/styler.css
-js/County.js
-js/Error.js
-js/Job.js
-js/JobAd.js
-js/JobBoard.js
-js/OccupationArea.js
-js/Province.js
-js/FacebookOAuth.js
+js/app.min.js
 //maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css
 //maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css
 //code.jquery.com/jquery-1.11.0.min.js
