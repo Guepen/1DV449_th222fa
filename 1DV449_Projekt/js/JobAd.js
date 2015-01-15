@@ -47,9 +47,53 @@ function JobAd(id ,header, jobText, published, numberOfJobs, countyName, workLoc
  * renders the jobAd
  */
 JobAd.prototype.render = function(){
-    var website;
+    this.renderBackLink();
 
-    var backLink = $("<a id='back' href='#'>Tillbaka till sökresultatet</a>").appendTo("#content");
+    var jobContent = $("<div class='row'><div class='col-md-12'><div id='jobContent' class='panel panel-success'>" +
+    "</div></div></div>").appendTo("#content");
+
+    this.getHeader().appendTo("#jobContent");
+    this.getBody().appendTo("#jobContent");
+
+    this.getFooter().appendTo("#jobBody");
+
+
+};
+
+JobAd.prototype.getHeader = function(){
+    return $("<div class='panel-heading'><h3>" + this.header +"</h3>" +
+    "<p class='text'>Publicerad: " + this.getPublishedDate() + "</p></div>");
+};
+
+JobAd.prototype.getBody = function(){
+    return $("<div id='jobBody' class='panel-body'><p>" + this.jobName + " till "+ this.countyName +"</p>" +
+    "<div class='col-md-10'><p class='text'>" + this.jobText + "</p></div></div>") ;
+
+};
+
+JobAd.prototype.getFooter = function(){
+    return  $("<div class='col-md-5'><p class='text'> <b>antal platser: </b> "+ this.numberOfJobs + "</p>" +
+    "<p class='text'><b>Varaktighet: </b>" + this.duration + "</p>" +
+    "<p class='text'><b>Arbetstid: </b>" + this.workHours + "</p>" +
+    "<p class='text'><b>Lön: </b>" + this.salaryType + "</p></div>" +
+    "<div class='col-md-5'><p class='text'><b>Arbetsgivare: </b>" + this.workLocationName + "</p>"+
+        this.getAddress() +  this.getFacebook() + this.getWebSite() +"</div>");
+
+};
+
+JobAd.prototype.getAddress = function(){
+    if (this.streetName === 'saknas' && this.postArea === 'saknas' && this.postCode === 'saknas') {
+        return "";
+
+    } else{
+        return "<p class='text'><b>Adress</b>" + this.streetName + "</p>" +
+        "<p class='text'><b>Postnummmer</b>" + this.postCode + "</p><p class='text'><b>Ort</b>" + this.postArea + "</p>";
+    }
+};
+
+JobAd.prototype.renderBackLink = function(){
+    var backLink = $("<div class='row'><div class='col-md-12'><a id='back' href='#'>Tillbaka till sökresultatet</a>" +
+    "</div></div>").appendTo("#content");
     backLink.click(function(){
         if (JobBoard.online) {
             JobBoard.renderJobList();
@@ -58,50 +102,30 @@ JobAd.prototype.render = function(){
         }
     });
 
-    var panel = $("<div class='panel panel-success'></div>").appendTo("#content");
-    $("<div class='panel-heading'><h3>" + this.header +" <small class='pull-right'>publicerad: " + this.getPublishedDate()
-    + "</small></h3> </div> ").appendTo(panel);
+};
 
-    var body = $("<div class='panel-body'><p>" + this.jobName + " "+ this.countyName +"</p></div>").appendTo(panel);
-
-    $("<div class='col-md-10'><p class='text'>" + this.jobText + "</p></div>").appendTo(body);
-
-    var footer = $("<div class='col-md-12'></div>").appendTo(body);
-
-    $("<div class='col-md-5 pull-left'><p class='text'> <b>antal platser: </b> "+ this.numberOfJobs + "</p>" +
-    "<p class='text'><b>Varaktighet: </b>" + this.duration + "</p>" +
-    "<p class='text'><b>Arbetstid: </b>" + this.workHours + "</p>" +
-    "<p class='text'><b>Lön: </b>" + this.salaryType + "</p></div>").appendTo(footer);
-
-    if(this.website === 'saknas'){
-       website = "<p class='text'>Hemsida saknas</p>";
-    } else{
-        website = "<a target='_blank' href="+ this.website +"> Läs mer/Ansök </a></div>";
+JobAd.prototype.getWebSite = function(){
+    if(this.website !== 'saknas'){
+        return "<a target='_blank' href="+ this.website +"> Läs mer/Ansök </a></div>";
     }
-
-
-    $("<div class='col-md-5 pull-right'><p class='text'><b>Arbetsgivare: </b>" + this.workLocationName + "</p>"+
-        "<p class='text'><b>Adress: </b></p><p class='text'>"+ this.streetName +"</p><p class='text'>"+ this.postCode +
-    "</p><p class='text'>"+ this.postArea +"</p>"+
-        this.renderFacebook() + website).appendTo(footer);
-
+    return "";
 };
 
 /**
  *
  * @returns {string} html-code for the facebook-link
  */
-JobAd.prototype.renderFacebook = function(){
+JobAd.prototype.getFacebook = function(){
     var status = $("#status").text();
-    switch (status){
-        case 'Inloggad':
-            if (this.facebook === 'saknas') {
-                return "<p><b>Arbetsgivaren verkar sakna facebook</b></p>";
-            }
-            return "<a target='_blank' href=" + this.facebook + "> Arbetsgivarens facebook </a>";
-        default:
-            return "<p class='text'>Var vänlig att logga in med facebook för att se arbetsgivarens facebook</p>";
+    if (this.facebook !== 'saknas') {
+        switch (status) {
+            case 'Inloggad':
+                return "<a target='_blank' href=" + this.facebook + "> Arbetsgivarens facebook </a>";
+            default:
+                return "<p class='text'>Var vänlig att logga in med facebook för att se arbetsgivarens facebook</p>";
+        }
     }
+    return "";
 
 };
 
@@ -110,5 +134,5 @@ JobAd.prototype.renderFacebook = function(){
  * @returns {string} a nice looking date
  */
 JobAd.prototype.getPublishedDate = function(){
-  return this.published.getFullYear() + "-" + this.published.getMonth() + 1 + "-" + this.published.getDate();
+    return this.published.getFullYear() + "-" + this.published.getMonth() + 1 + "-" + this.published.getDate();
 };

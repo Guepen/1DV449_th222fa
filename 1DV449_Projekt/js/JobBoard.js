@@ -376,6 +376,7 @@ var JobBoard = {
                     }
                     if (data.length > 0) {
                         data.forEach(function (job) {
+                            console.log(job);
                             var newJob = new Job(job.annonsid, job.annonsrubrik, job.yrkesbenamning);
                             jobList.push(newJob);
                             that.jobList.push(newJob);
@@ -423,7 +424,7 @@ var JobBoard = {
 
     renderCachedJobAd: function(cachedJobAd){
         $("#content").empty();
-        var jobAd = new JobAd(cachedJobAd.header, cachedJobAd.jobText, cachedJobAd.published,
+        var jobAd = new JobAd(cachedJobAd.id,cachedJobAd.header, cachedJobAd.jobText, cachedJobAd.published,
             cachedJobAd.numberOfJobs, cachedJobAd.countyName, cachedJobAd.workLocationName, cachedJobAd.duration,
             cachedJobAd.workHours, cachedJobAd.salaryType, cachedJobAd.jobName, cachedJobAd.website,
             cachedJobAd.facebook, cachedJobAd.streetName, cachedJobAd.postCode, cachedJobAd.postArea);

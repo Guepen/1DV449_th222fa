@@ -150,8 +150,8 @@ class WorkService {
                     //add new data to db
                     $this->repository->add('jobs', array('countyId', 'occupationAreaId', 'annonsrubrik',
                             'yrkesbenamning', 'annonsid', 'nextUpdate'),
-                        array($countyId, $occupationAreaId, $job->getJobHeader(), $job->getJobAdId(),
-                            $job->getJobName(), strtotime("+1 hour")));
+                        array($countyId, $occupationAreaId, $job->getJobHeader(),$job->getJobName(),
+                            $job->getJobAdId(), strtotime("+1 hour")));
                 }
                 return $this->sendResponse($jobs['matchningslista']['matchningdata']);
 

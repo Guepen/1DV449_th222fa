@@ -9,6 +9,7 @@
  * @constructor
  */
 function Job(jobId, header, jobName){
+    console.log(jobId, header, jobName);
 
     this.jobId = jobId;
     this.header = header;
