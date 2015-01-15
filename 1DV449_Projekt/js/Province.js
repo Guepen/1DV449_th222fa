@@ -22,7 +22,8 @@ Province.prototype.render = function(){
     li.appendTo(ul);
     provinceLink.appendTo(li);
 
-    provinceLink.click(function(){
+    provinceLink.click(function(e){
+        e.preventDefault();
         if (JobBoard.online) {
             $("#counties").addClass("panel panel-warning");
             JobBoard.getCounties(event.target.id);

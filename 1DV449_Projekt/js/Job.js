@@ -22,7 +22,8 @@ Job.prototype.render = function(){
 
     var jobLink = $("<a id='"+ this.jobId +"' href='#'>" + this.jobName + "</a>").appendTo(body);
 
-    jobLink.click(function(){
+    jobLink.click(function(e){
+        e.preventDefault();
         if (JobBoard.online) {
             JobBoard.getJob(event.target.id);
         } else{

@@ -20,7 +20,8 @@ OccupationArea.prototype.render = function(){
     li.appendTo(ul);
     occupationLink.appendTo(li);
 
-    occupationLink.click(function(){
+    occupationLink.click(function(e){
+        e.preventDefault();
         if (JobBoard.online) {
             JobBoard.searchQueries.occupationId = that.occupationId;
             JobBoard.getJobs(JobBoard.searchQueries.occupationId, JobBoard.searchQueries.countyId);

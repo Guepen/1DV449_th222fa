@@ -23,7 +23,8 @@ County.prototype.render = function(){
     li.appendTo(ul);
     countyLink.appendTo(li);
 
-    countyLink.click(function(){
+    countyLink.click(function(e){
+        e.preventDefault();
         if (JobBoard.online) {
             $("#occupationsList").empty();
             JobBoard.searchQueries.countyId = that.countyId;

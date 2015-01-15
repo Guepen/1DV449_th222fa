@@ -93,7 +93,8 @@ JobAd.prototype.getAddress = function(){
 JobAd.prototype.renderBackLink = function(){
     var backLink = $("<div class='row'><div class='col-md-12'><a id='back' href='#'>Tillbaka till sökresultatet</a>" +
     "</div></div>").appendTo("#content");
-    backLink.click(function(){
+    backLink.click(function(e){
+        e.preventDefault();
         if (JobBoard.online) {
             JobBoard.renderJobList();
         } else{

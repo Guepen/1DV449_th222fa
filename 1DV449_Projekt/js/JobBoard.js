@@ -14,7 +14,8 @@ var JobBoard = {
      * called on window.onload
      */
     init: function(){
-        $(".close").click(function(){
+        $(".close").click(function(e){
+            e.preventDefault();
             $("#tips").remove();
         });
 
@@ -75,7 +76,8 @@ var JobBoard = {
             "href='#'>Gör ny sökning</a>").appendTo("#online");
 
             //click-event for new search
-            $("#newSearch").click(function(){
+            $("#newSearch").click(function(e){
+                e.preventDefault();
                 $("#onlineContent").remove();
                 $("#content").empty();
                 JobBoard.renderSearchView();
@@ -92,7 +94,8 @@ var JobBoard = {
         " men du kan fortfarande komma åt de jobb som du har visat tidigare</h3>").appendTo("#offline");
 
         //close the alert
-        $(".close").click(function(){
+        $(".close").click(function(e){
+            e.preventDefault();
             $("#offlineContent").remove();
         })
     },
@@ -350,7 +353,8 @@ var JobBoard = {
 
     renderNewSearchLink: function(){
         var newSearch = $("<a href='#'>Ny sökning</a>").appendTo("#content");
-        newSearch.click(function () {
+        newSearch.click(function (e) {
+            e.preventDefault();
             $("#content").empty();
             JobBoard.renderSearchView();
         });
@@ -405,7 +409,8 @@ var JobBoard = {
     renderJobList: function(){
         $("#content").empty();
         var backLink = $("<a href='#'>Ny sökning</a>").appendTo("#content");
-        backLink.click(function(){
+        backLink.click(function(e){
+            e.preventDefault();
             $("#content").empty();
             JobBoard.renderSearchView();
         });
