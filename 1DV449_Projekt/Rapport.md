@@ -38,7 +38,9 @@ Serversida
     designmönstret Repository Pattern.
     Om jag får Ett svar från API:et så sparar jag ner det nödvändiga datat och skickar med en 
     timestamp med värdet för när datat anses vara ofräscht. 
-    Jag har valt att cacha mitt data i en timme.
+    Jag har valt att cacha län, kommuner och yrkesområden i en vecka då dessa förmodligen aldrig kommer att
+    ändras men det kan ju ske en uppdatering.
+    Jobben har jag valt att cacha i en timme så man slipper vänta för länge  på att få se nyinkomna jobb.
      
      
 ### Felhantering
@@ -72,7 +74,8 @@ Klientsida
     berätta att fel har inträffat och även då renderas ett lämpligt felmeddelande till klienten.
     
 ### Cachning
-    På klienten har jag valt att spara gjorda jobbsökningar i Session Storage så.
+    Ett cache manifest används för att cacha statiska filer som js och css.
+    På klienten har jag valt att spara gjorda jobbsökningar i Session Storage.
     Detta valde jag att göra dels eftersom man då slipper att kolla om datat 
     är fräscht eller inte och i så fall även ta det bort det.
     Datat i Session Storage finns nämligen bara kvar så länge sessionen lever.
