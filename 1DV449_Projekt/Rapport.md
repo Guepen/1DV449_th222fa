@@ -40,14 +40,15 @@ Serversida
     timestamp med värdet för när datat anses vara ofräscht. 
     Jag har valt att cacha län, kommuner och yrkesområden i en vecka då dessa förmodligen aldrig kommer att
     ändras men det kan ju ske en uppdatering.
-    Jobben har jag valt att cacha i en timme så man slipper vänta för länge  på att få se nyinkomna jobb.
+    Jobben har jag valt att cacha i en timme så man slipper vänta för länge  på att få se nyinkomna jobb
+    eller uppdateringar på existerande jobb.
      
      
 ### Felhantering
     Om jag inte får något svar från mitt API returneras NULL från webservicen till service-klassen. 
     Service-klassen i sin tur kollar om svaret är null och om väntat data finns. 
     Om väntat data inte finns returnas ett JSON-svar med error: true som klienten 
-    sedan fångar upp och presenterar ett felmeddelande till användaren.
+    sedan fångar upp och presenterar ett lämpligt felmeddelande till användaren.
     
     För att inte min applikation ska krascha om ett fel inträffar när man gör ett anrop mot databasen 
     har jag valt att bara lägga en try- cactch runt koden. 
@@ -164,10 +165,10 @@ Klientsida
  * Testbar kod
     * Serversidan
         * Klasser implmenterar interface som dependency injectas i konstruktorerna vilket gör att man kan skapa testklasser
-        * Objektorienterat(för det mesta... inte hunnit med att skapa klasser för allt te.x. Province, County)
-    *Klientsidan
-        * "Objektorienterat" (javascript är prototypbaserat)
-        * Testbara funktioner för det mesta
+        på ett smidigt sätt.
+    * Klientsidan
+        * "Objektorienterat" (javascript är prototypbaserat) för det mesta. Kod i JobBoard borde brytas ut
+        * Testbara funktioner
  * Kodkvalitén överlag håller ett bra mått
  
 ### Reflektion
